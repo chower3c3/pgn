@@ -509,7 +509,7 @@ function PricingSection(){
   const rH=useReveal(),rM=useReveal(),rP=useReveal(),rC=useReveal(),rR=useReveal();
   const plans=[
     {tier:"Monthly",amt:"146",period:"/mo",was:"Regular: $195/mo",save:"Save $49 per month",top:false,desc:"Flexible month-to-month access. A great starting point to experience PGN before committing to a full season.",feats:["Monthly twilight events","Quarterly 18-hole events","Networking events","Member directory access","Exclusive PGN content","Cancel anytime"]},
-    {tier:"Season Pass",amt:"750",period:"Apr–Oct",was:"Regular: $1,000",save:"Best value for the full season",top:false,desc:"Commit to the full golf season and get the most out of every PGN event, from the first twilight round through the year-end tournament.",feats:["All monthly twilight events","All quarterly 18-hole events","Priority Event Registration","Networking events","Member directory access","Exclusive PGN content"]},
+    {tier:"Season Pass",amt:"750",period:"Apr–Oct",was:"Regular: $1,000",save:"Best value for the full season",top:false,desc:"Commit to the full golf season and get the most out of every PGN event, from the first twilight round through the year-end tournament.",feats:["All monthly twilight events","All quarterly 18-hole events","Guaranteed tournament invite","Networking events","Member directory access","Exclusive PGN content"]},
     {tier:"Annual",amt:"1,346",period:"/yr",was:"Regular: $1,795/yr",save:"Save $449 annually",top:true,desc:"Full 12-month membership including off-season simulator outings. The complete PGN experience for those building their network year-round.",feats:["Everything in Season Pass","Off-season simulator outings","Priority event registration","Founding member status","Year-round exclusive content"]},
   ];
   return(
@@ -737,7 +737,7 @@ function AboutSection(){
             <div className="pillars">
               {[
                 {ic:"i-target",t:"Intentional by Design",b:"Every foursome is built around your goals. We survey each member before every event and match you with people who can actually move the needle for your business."},
-                {ic:"i-heart",t:"The Game We Love",b:"Golf has a way of revealing character, building trust, and creating memories. We built PGN around that truth — and around courses worth showing up for."},
+                {ic:"i-heart",t:"The Game We Love",b:"Golf has a way of revealing character, building trust, and creating memories. We built PGN around that truth, and around courses worth showing up for."},
                 {ic:"i-chart",t:"A Network That Works",b:"Our members are Pittsburgh entrepreneurs, executives, and investors who are serious about growth. One conversation on the course can open a door that a hundred cold emails never could."},
               ].map(p=>(
                 <div className="pillar" key={p.t}><I id={p.ic}/><div><strong>{p.t}</strong><span>{p.b}</span></div></div>
