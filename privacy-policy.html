@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy | Pittsburgh Golf Network</title>
+  <meta name="description" content="Privacy Policy for Pittsburgh Golf Network — an application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@1,400&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root" style="opacity:0;transition:opacity 0.3s"></div>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const CSS = `
+  :root {
+    --gold:#C9A84C;--gold-light:#E2C06A;--gold-dim:#9A7A32;--gold-pale:#FAF3E0;
+    --green:#0E2B1A;--green-mid:#1A4A2A;--green-accent:#2A6640;--green-pale:#EBF2EC;
+    --off-white:#F8F7F4;--cream:#F3EFE6;--white:#FFFFFF;
+    --text:#141414;--text-mid:#444;--text-light:#888;
+    --border:rgba(0,0,0,0.08);
+    --shadow-sm:0 2px 16px rgba(0,0,0,0.07);
+    --shadow-md:0 8px 40px rgba(0,0,0,0.11);
+    --radius:8px;--radius-sm:4px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Montserrat',sans-serif;background:var(--off-white);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+  img{display:block;}
+  button{font-family:inherit;cursor:pointer;}
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:var(--off-white);}
+  ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px;}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(201,168,76,0.15);transition:box-shadow 0.3s;}
+  .nav.scrolled{box-shadow:0 1px 24px rgba(0,0,0,0.08);}
+  .nav-logo{display:flex;align-items:center;gap:11px;}
+  .nav-logo-svg{width:38px;height:38px;flex-shrink:0;}
+  .nav-logo-text{display:flex;flex-direction:column;gap:1px;}
+  .nav-logo-primary{font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--green);}
+  .nav-links{display:flex;align-items:center;gap:28px;list-style:none;}
+  .nav-links a{font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-mid);transition:color 0.2s;}
+  .nav-links a:hover{color:var(--gold-dim);}
+  .nav-actions{display:flex;align-items:center;gap:10px;}
+  .btn-ghost{font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border:1.5px solid rgba(14,43,26,0.3);border-radius:var(--radius-sm);color:var(--green);transition:all 0.2s;display:inline-block;}
+  .btn-ghost:hover{border-color:var(--green);background:var(--green);color:white;}
+  .btn-gold{font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:9px 20px;background:var(--gold);border-radius:var(--radius-sm);color:white;border:none;transition:all 0.22s;display:inline-block;}
+  .btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+  .nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;z-index:1001;}
+  .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:1px;transition:all 0.28s;transform-origin:center;}
+  .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+  .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .mobile-menu{position:fixed;top:64px;left:0;right:0;z-index:800;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,0.15);padding:24px 28px 32px;display:flex;flex-direction:column;gap:6px;transform:translateY(-110%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);padding:12px 0;border-bottom:1px solid var(--border);display:block;transition:color 0.2s;}
+  .mobile-menu a:hover{color:var(--green);}
+  .mobile-menu-ctas{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .mobile-menu-ctas a{flex:1;text-align:center;}
+
+  .sw{max-width:1160px;margin:0 auto;padding:0 48px;}
+  .footer{background:#050F09;padding:52px 0 28px;border-top:1px solid rgba(201,168,76,0.1);}
+  .ft{display:flex;gap:48px;justify-content:space-between;margin-bottom:44px;flex-wrap:wrap;}
+  .fb{max-width:240px;}
+  .fb-name{font-size:13.5px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+  .fb-tag{font-size:8.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:14px;}
+  .fb-desc{font-size:12.5px;color:rgba(255,255,255,0.32);line-height:1.75;font-weight:300;}
+  .fc h5{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:15px;}
+  .fc ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .fc ul a{font-size:12.5px;color:rgba(255,255,255,0.37);font-weight:300;transition:color 0.2s;}
+  .fc ul a:hover{color:white;}
+  .fdiv{height:1px;background:rgba(255,255,255,0.05);margin-bottom:22px;}
+  .fbot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .fbot p{font-size:11px;color:rgba(255,255,255,0.24);font-weight:300;}
+  .fbot a{color:rgba(255,255,255,0.24);}
+  .fbot a:hover{color:rgba(255,255,255,0.5);}
+  .fgold{height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-light) 50%,var(--gold) 70%,transparent 100%);opacity:0.28;margin-top:24px;}
+
+  .legal-wrap{max-width:800px;margin:0 auto;padding:100px 48px 80px;}
+  .legal-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:36px;}
+  .legal-back:hover{color:var(--green);}
+
+  @media(max-width:960px){
+    .nav{padding:0 20px;}
+    .nav-links,.nav-actions{display:none;}
+    .nav-hamburger{display:flex;}
+    .sw{padding-left:24px;padding-right:24px;}
+    .ft{flex-direction:column;gap:32px;}
+    .fbot{flex-direction:column;}
+    .legal-wrap{padding:88px 24px 60px;}
+  }
+`;
+
+function NavLogo(){
+  return <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="Pittsburgh Golf Network" style={{height:"42px",width:"auto",display:"block"}}/>;
+}
+
+function Nav({scrolled}){
+  const[open,setOpen]=useState(false);
+  const links=[["/#pricing","Membership"],["/#courses","Courses"],["/#calendar","Calendar"],["/#sponsors","Sponsors"],["/#blog","Blog"],["/#contact","Contact"]];
+  const close=()=>setOpen(false);
+  return(
+    <>
+      <nav className={"nav"+(scrolled?" scrolled":"")}>
+        <a href="/" className="nav-logo" onClick={close}>
+          <NavLogo/>
+          <div className="nav-logo-text">
+            <span className="nav-logo-primary">Pittsburgh Golf Network</span>
+          </div>
+        </a>
+        <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h}>{l}</a></li>)}</ul>
+        <div className="nav-actions">
+          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer">Member Login</a>
+          <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer">Apply Now</a>
+        </div>
+        <button className={"nav-hamburger"+(open?" open":"")} onClick={()=>setOpen(o=>!o)} aria-label="Menu">
+          <span/><span/><span/>
+        </button>
+      </nav>
+      <div className={"mobile-menu"+(open?" open":"")}>
+        {links.map(([h,l])=><a key={h} href={h} onClick={close}>{l}</a>)}
+        <div className="mobile-menu-ctas">
+          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer" onClick={close}>Member Login</a>
+          <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer" onClick={close}>Apply Now</a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Footer(){
+  const cols=[{h:"Membership",links:[["Pricing and Plans","/#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://members.pittsburghgolfnetwork.com"]]},{h:"Events",links:[["Event Calendar","/#calendar"],["Featured Courses","/#courses"],["Corporate Sponsors","/#sponsors"]]},{h:"Company",links:[["About PGN","/#about"],["Blog","/#blog"],["Contact","/#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
+  return(
+    <footer className="footer">
+      <div className="sw">
+        <div className="ft">
+          <div className="fb"><div className="fb-name">Pittsburgh Golf Network</div><div className="fb-tag">The Links Between Pittsburgh's Best Professionals</div><div className="fb-desc">An application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors.</div></div>
+          {cols.map(col=>(
+            <div className="fc" key={col.h}><h5>{col.h}</h5><ul>{col.links.map(([l,h])=><li key={l}><a href={h} target={h.startsWith("http")?"_blank":undefined} rel="noreferrer">{l}</a></li>)}</ul></div>
+          ))}
+        </div>
+        <div className="fdiv"/>
+        <div className="fbot"><p>2026 Pittsburgh Golf Network. All rights reserved.</p><p><a href="/privacy-policy">Privacy Policy</a>&nbsp;&middot;&nbsp;<a href="/terms">Terms of Service</a></p></div>
+        <div className="fgold"/>
+      </div>
+    </footer>
+  );
+}
+
+const legalStyles = {
+  h1:{fontFamily:"Montserrat,sans-serif",fontSize:"32px",fontWeight:800,color:"#0E2B1A",marginBottom:"8px",letterSpacing:"-0.02em",textTransform:"uppercase"},
+  eff:{fontSize:"13px",color:"#888",marginBottom:"40px",fontWeight:300},
+  h2:{fontFamily:"Montserrat,sans-serif",fontSize:"16px",fontWeight:700,color:"#0E2B1A",marginTop:"36px",marginBottom:"10px",textTransform:"uppercase",letterSpacing:"0.04em"},
+  h3:{fontFamily:"Montserrat,sans-serif",fontSize:"13.5px",fontWeight:700,color:"#0E2B1A",marginTop:"20px",marginBottom:"8px"},
+  p:{fontSize:"14px",lineHeight:"1.85",color:"#444",marginBottom:"14px",fontWeight:300},
+  li:{fontSize:"14px",lineHeight:"1.85",color:"#444",marginBottom:"6px",fontWeight:300,marginLeft:"20px"},
+  divider:{height:"1px",background:"rgba(201,168,76,0.25)",margin:"32px 0"},
+};
+
+function PrivacyContent(){
+  return(
+    <div>
+      <h1 style={legalStyles.h1}>Privacy Policy</h1>
+      <p style={legalStyles.eff}>Effective Date: April 7, 2026 &nbsp;·&nbsp; Last Updated: April 7, 2026</p>
+      <div style={legalStyles.divider}/>
+      <p style={legalStyles.p}>This privacy notice for Pittsburgh Golf Network ("Company," "we," "us," or "our") describes how and why we might collect, store, use, and/or share ("process") your information when you use our services, such as when you visit pittsburghgolfnetwork.com or engage with us in other related ways including sales, marketing, or events.</p>
+      <p style={legalStyles.p}><strong>Questions or concerns?</strong> Contact us at <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a>.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>1. What Information Do We Collect?</h2>
+      <p style={legalStyles.p}><strong>Information you provide:</strong> We collect personal information you voluntarily provide, including names, phone numbers, and email addresses when you express interest in our services, apply for membership, or contact us.</p>
+      <p style={legalStyles.p}><strong>Information automatically collected:</strong> When you visit our site, we automatically collect certain information including IP address, browser and device characteristics, operating system, language preferences, and usage data. We also collect information through cookies and similar technologies.</p>
+      <p style={legalStyles.p}><strong>Information from other sources:</strong> We may obtain information from public databases, marketing partners, and other third parties to enhance our marketing and keep our records current.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>2. How Do We Process Your Information?</h2>
+      <p style={legalStyles.p}>We process your information to provide, improve, and administer our services, communicate with you, prevent fraud, and comply with law. We only process your information when we have a valid legal reason to do so.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>3. When and With Whom Do We Share Your Information?</h2>
+      <p style={legalStyles.p}>We may share your information with third-party vendors and service providers who perform services on our behalf (ad networks, analytics, payment processors, communication tools). We may also share in connection with business transfers, with affiliates, or with business partners. We have contracts with all third parties designed to safeguard your information.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>4. Cookies and Tracking Technologies</h2>
+      <p style={legalStyles.p}>We may use cookies and similar tracking technologies to collect and store information. You can set your browser to refuse cookies, though this may affect certain features of our services.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>5. How Long Do We Keep Your Information?</h2>
+      <p style={legalStyles.p}>We keep your personal information for as long as necessary to fulfill the purposes outlined in this policy unless a longer retention period is required by law. When we no longer need your information, we delete or anonymize it.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>6. How Do We Keep Your Information Safe?</h2>
+      <p style={legalStyles.p}>We have implemented appropriate technical and organizational security measures to protect your personal information. However, no electronic transmission over the internet can be guaranteed 100% secure. Transmission of personal information to and from our services is at your own risk.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>7. Do We Collect Information from Minors?</h2>
+      <p style={legalStyles.p}>We do not knowingly collect data from or market to children under 18. If you become aware of any data we may have collected from children under 18, contact us at golf@pittsburghgolfnetwork.com.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>8. Your Privacy Rights</h2>
+      <p style={legalStyles.p}>Depending on your location, you may have rights to access, correct, delete, or port your personal information. You may also have the right to opt out of marketing communications at any time by clicking "unsubscribe" in our emails or contacting us directly.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>9. California Residents (CCPA)</h2>
+      <p style={legalStyles.p}>California residents have specific rights including the right to know what personal information we collect, the right to delete personal information, and the right to non-discrimination for exercising privacy rights. Pittsburgh Golf Network has not sold any personal information to third parties in the preceding 12 months. To exercise your rights, contact us at golf@pittsburghgolfnetwork.com or visit pittsburghgolfnetwork.com/contact.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>10. Virginia Residents (CDPA)</h2>
+      <p style={legalStyles.p}>Virginia residents have rights to access, correct, delete, and obtain a copy of their personal data, and to opt out of targeted advertising or profiling. Pittsburgh Golf Network has not sold any personal data to third parties. To exercise your rights, email golf@pittsburghgolfnetwork.com. Appeals may be submitted within 60 days of our decision.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>11. Do-Not-Track Features</h2>
+      <p style={legalStyles.p}>We do not currently respond to DNT browser signals or other mechanisms that communicate your choice not to be tracked online, as no uniform standard has been finalized.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>12. Updates to This Notice</h2>
+      <p style={legalStyles.p}>We may update this privacy notice from time to time. The updated version will be effective as soon as it is accessible. We encourage you to review this notice frequently.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>13. Contact Us</h2>
+      <p style={legalStyles.p}><strong>Pittsburgh Golf Network</strong> · Pittsburgh, Pennsylvania · <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a></p>
+      <p style={{...legalStyles.p,marginTop:"8px"}}>To review, update, or delete your data: <a href="/#contact" style={{color:"#9A7A32"}}>pittsburghgolfnetwork.com/contact</a></p>
+      <p style={{...legalStyles.p,marginTop:"40px",fontSize:"12px",color:"#aaa"}}>© 2026 Pittsburgh Golf Network. All rights reserved.</p>
+    </div>
+  );
+}
+
+function App(){
+  const[scrolled,setScrolled]=useState(false);
+
+  useEffect(()=>{
+    const tag=document.createElement("style");
+    tag.textContent=CSS;
+    document.head.appendChild(tag);
+    return()=>document.head.removeChild(tag);
+  },[]);
+
+  useEffect(()=>{
+    const h=()=>setScrolled(window.scrollY>20);
+    window.addEventListener("scroll",h,{passive:true});
+    return()=>window.removeEventListener("scroll",h);
+  },[]);
+
+  return(
+    <>
+      <Nav scrolled={scrolled}/>
+      <main className="legal-wrap">
+        <a href="/" className="legal-back">&#8592; Back to Pittsburgh Golf Network</a>
+        <PrivacyContent/>
+      </main>
+      <Footer/>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+setTimeout(()=>{const r=document.getElementById('root');if(r)r.style.opacity='1';},100);
+  </script>
+</body>
+</html>

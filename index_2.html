@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pittsburgh Golf Network | The Links Between Pittsburgh's Best Professionals</title>
+  <meta name="description" content="An application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@1,400&display=swap" rel="stylesheet"/>
+  <!-- React + Babel via CDN — no build step required -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root" style="opacity:0;transition:opacity 0.3s"></div>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+/* ── CSS ── */
+const CSS = `
+  :root {
+    --gold:#C9A84C;--gold-light:#E2C06A;--gold-dim:#9A7A32;--gold-pale:#FAF3E0;
+    --green:#0E2B1A;--green-mid:#1A4A2A;--green-accent:#2A6640;--green-pale:#EBF2EC;
+    --off-white:#F8F7F4;--cream:#F3EFE6;--white:#FFFFFF;
+    --text:#141414;--text-mid:#444;--text-light:#888;
+    --border:rgba(0,0,0,0.08);
+    --shadow-sm:0 2px 16px rgba(0,0,0,0.07);
+    --shadow-md:0 8px 40px rgba(0,0,0,0.11);
+    --shadow-lg:0 20px 80px rgba(0,0,0,0.15);
+    --radius:8px;--radius-sm:4px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Montserrat',sans-serif;background:var(--off-white);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  a{text-decoration:none;color:inherit;}
+  img{display:block;}
+  button{font-family:inherit;cursor:pointer;}
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:var(--off-white);}
+  ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px;}
+
+  .nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(201,168,76,0.15);transition:box-shadow 0.3s;}
+  .nav.scrolled{box-shadow:0 1px 24px rgba(0,0,0,0.08);}
+  .nav-logo{display:flex;align-items:center;gap:11px;}
+  .nav-logo-svg{width:38px;height:38px;flex-shrink:0;}
+  .nav-logo-text{display:flex;flex-direction:column;gap:1px;}
+  .nav-logo-primary{font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--green);}
+  .nav-logo-sub{font-size:7.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);}
+  .nav-links{display:flex;align-items:center;gap:28px;list-style:none;}
+  .nav-links a{font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-mid);transition:color 0.2s;}
+  .nav-links a:hover{color:var(--gold-dim);}
+  .nav-actions{display:flex;align-items:center;gap:10px;}
+  .btn-ghost{font-size:10.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border:1.5px solid rgba(14,43,26,0.3);border-radius:var(--radius-sm);color:var(--green);transition:all 0.2s;display:inline-block;}
+  .btn-ghost:hover{border-color:var(--green);background:var(--green);color:white;}
+  .btn-gold{font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:9px 20px;background:var(--gold);border-radius:var(--radius-sm);color:white;border:none;transition:all 0.22s;display:inline-block;}
+  .btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+  .nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;z-index:1001;}
+  .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:1px;transition:all 0.28s;transform-origin:center;}
+  .nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+  .nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  .mobile-menu{position:fixed;top:64px;left:0;right:0;z-index:800;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,0.15);padding:24px 28px 32px;display:flex;flex-direction:column;gap:6px;transform:translateY(-110%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-mid);padding:12px 0;border-bottom:1px solid var(--border);display:block;transition:color 0.2s;}
+  .mobile-menu a:hover{color:var(--green);}
+  .mobile-menu-ctas{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .mobile-menu-ctas a{flex:1;text-align:center;}
+
+  .hero{min-height:100vh;padding-top:64px;position:relative;display:flex;align-items:center;overflow:hidden;background:var(--green);}
+  .hero-mesh{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 100% 80% at 80% 50%,rgba(42,102,64,0.55) 0%,transparent 65%),radial-gradient(ellipse 60% 60% at 5% 80%,rgba(201,168,76,0.08) 0%,transparent 55%),linear-gradient(170deg,#061610 0%,#0E2B1A 50%,#122A1C 100%);}
+  .hero-grid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:72px 72px;}
+  .hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:100px 60px 80px;width:100%;}
+  .hero-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:10px;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;}
+  .hero-eyebrow::before,.hero-eyebrow::after{content:'';display:block;width:32px;height:1px;background:var(--gold);opacity:0.5;}
+  .hero-headline{font-size:clamp(32px,6vw,80px);font-weight:900;line-height:1.05;color:white;margin-bottom:20px;letter-spacing:-0.02em;text-transform:uppercase;max-width:780px;word-break:break-word;}
+  .hero-headline em{font-style:italic;color:var(--gold-light);}
+  .hero-tagline{font-family:'Libre Baskerville',serif;font-style:italic;font-size:18px;color:rgba(255,255,255,0.55);margin-bottom:24px;}
+  .hero-sub{font-size:15px;line-height:1.9;font-weight:300;color:rgba(255,255,255,0.58);max-width:540px;margin-bottom:48px;}
+  .hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+  .btn-hero-p{font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:17px 40px;background:var(--gold);color:white;border-radius:var(--radius-sm);transition:all 0.25s;border:none;display:inline-block;}
+  .btn-hero-p:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 10px 32px rgba(201,168,76,0.4);}
+  .btn-hero-s{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:17px 0;border-bottom:1px solid rgba(255,255,255,0.25);transition:all 0.2s;display:inline-block;}
+  .btn-hero-s:hover{color:white;border-color:white;}
+
+  section{scroll-margin-top:64px;}
+  .sw{max-width:1160px;margin:0 auto;padding:0 48px;}
+  .sh{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:9.5px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:14px;}
+  .eyebrow::before,.eyebrow::after{content:'';width:20px;height:1px;background:var(--gold-dim);opacity:0.6;}
+  .st{font-size:clamp(26px,3.5vw,40px);font-weight:800;color:var(--green);line-height:1.1;margin-bottom:14px;letter-spacing:-0.02em;text-transform:uppercase;}
+  .ss{font-size:14.5px;line-height:1.85;color:var(--text-mid);font-weight:300;}
+  .st-l{color:white;}.ss-l{color:rgba(255,255,255,0.55);}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  .value-s{background:var(--white);padding:100px 0;}
+  .vg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.15);border-radius:var(--radius);overflow:hidden;}
+  .vc{background:var(--white);padding:48px 36px 44px;transition:background 0.25s;}
+  .vc:hover{background:var(--gold-pale);}
+  .vi{width:44px;height:44px;background:linear-gradient(135deg,var(--green) 0%,var(--green-accent) 100%);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
+  .vi svg{width:20px;height:20px;fill:var(--gold-light);}
+  .vc h3{font-size:13px;font-weight:700;color:var(--green);margin-bottom:13px;text-transform:uppercase;letter-spacing:0.05em;}
+  .vc p{font-size:13.5px;line-height:1.85;color:var(--text-mid);font-weight:300;}
+
+  .pricing-s{background:var(--off-white);padding:100px 0;}
+  .mb{max-width:880px;margin:0 auto 28px;background:linear-gradient(135deg,var(--green) 0%,#1C3D2A 100%);border-radius:var(--radius);padding:36px 44px;border:1px solid rgba(201,168,76,0.2);position:relative;overflow:hidden;}
+  .mb::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07) 0%,transparent 70%);pointer-events:none;}
+  .mb-lbl{font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;}
+  .mb-g{display:grid;grid-template-columns:1fr 1fr;gap:14px 48px;}
+  .mb-i{display:flex;align-items:flex-start;gap:11px;font-size:13px;color:rgba(255,255,255,0.78);font-weight:400;line-height:1.45;}
+  .mb-i svg{width:16px;height:16px;fill:var(--gold-light);flex-shrink:0;margin-top:2px;}
+  .promo-bar{max-width:880px;margin:0 auto 44px;display:flex;align-items:center;justify-content:space-between;gap:20px;background:white;border:1px solid rgba(201,168,76,0.3);border-radius:var(--radius);padding:18px 28px;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
+  .promo-bar strong{display:block;font-size:14px;font-weight:700;color:var(--green);margin-bottom:3px;}
+  .promo-bar span{font-size:12.5px;color:var(--text-mid);font-weight:300;}
+  .promo-pill{font-size:9.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--gold);color:white;padding:7px 16px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+  .pg{max-width:880px;margin:0 auto 36px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
+  .pc{background:white;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;}
+  .pc:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+  .pc.top{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow-md);transform:scale(1.022);}
+  .pc.top:hover{transform:scale(1.022) translateY(-4px);}
+  .pc-pop{background:var(--gold);color:white;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-align:center;padding:7px;}
+  .pc-h{padding:26px 26px 22px;background:linear-gradient(160deg,var(--green) 0%,#1C4030 100%);}
+  .pc.top .pc-h{background:linear-gradient(160deg,#081A10 0%,var(--green-mid) 100%);}
+  .pc-tier{font-size:9.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+  .pc-amt-row{display:flex;align-items:baseline;gap:2px;margin-bottom:5px;}
+  .pc-cur{font-size:18px;font-weight:600;color:white;}
+  .pc-amt{font-size:44px;font-weight:900;color:white;line-height:1;letter-spacing:-0.03em;}
+  .pc-per{font-size:12px;color:rgba(255,255,255,0.45);margin-left:3px;}
+  .pc-was{font-size:11px;color:rgba(255,255,255,0.35);text-decoration:line-through;margin-bottom:4px;}
+  .pc-save{font-size:10.5px;color:var(--gold-light);font-weight:600;}
+  .pc-b{padding:24px 26px;background:white;}
+  .pc-desc{font-size:13px;color:var(--text-mid);line-height:1.75;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);font-weight:300;}
+  .pc-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .pc-feats li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.45;color:var(--text);}
+  .pc-feats li svg{width:13px;height:13px;fill:var(--green-accent);flex-shrink:0;margin-top:2px;}
+  .btn-pc{display:block;text-align:center;padding:12px 18px;font-size:10.5px;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;border-radius:var(--radius-sm);transition:all 0.2s;border:1.5px solid var(--green);color:var(--green);background:transparent;}
+  .btn-pc:hover{background:var(--green);color:white;}
+  .btn-pc.gld{background:var(--gold);color:white;border-color:var(--gold);}
+  .btn-pc.gld:hover{background:var(--gold-light);border-color:var(--gold-light);}
+  .ref-strip{max-width:880px;margin:0 auto;background:var(--green-pale);border:1px solid rgba(42,102,64,0.15);border-radius:var(--radius);padding:20px 28px;display:flex;align-items:flex-start;gap:14px;}
+  .ref-strip svg{width:24px;height:24px;fill:var(--green-accent);flex-shrink:0;margin-top:2px;}
+  .ref-strip strong{display:block;font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;}
+  .ref-strip p{font-size:12.5px;color:var(--text-mid);line-height:1.65;font-weight:300;}
+
+  .roi-s{padding:100px 0;background:linear-gradient(170deg,var(--green) 0%,#122A1C 100%);position:relative;overflow:hidden;}
+  .roi-s::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 85% 20%,rgba(201,168,76,0.05) 0%,transparent 60%);pointer-events:none;}
+  .roi-g{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+  .roi-survey{background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);padding:28px 30px;margin-bottom:24px;backdrop-filter:blur(6px);}
+  .roi-survey h4{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .roi-survey p{font-size:13.5px;line-height:1.8;color:rgba(255,255,255,0.72);font-weight:300;}
+  .roi-steps{display:flex;flex-direction:column;gap:12px;}
+  .roi-step{display:flex;align-items:flex-start;gap:14px;}
+  .roi-num{width:28px;height:28px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0;margin-top:1px;}
+  .roi-step strong{display:block;font-size:12.5px;font-weight:700;color:white;margin-bottom:3px;}
+  .roi-step span{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;font-weight:300;}
+  .roi-cards{display:flex;flex-direction:column;gap:16px;}
+  .roi-card{background:rgba(255,255,255,0.07);border:1px solid rgba(201,168,76,0.18);border-radius:var(--radius);padding:28px 30px;backdrop-filter:blur(6px);transition:background 0.25s;}
+  .roi-card:hover{background:rgba(255,255,255,0.1);}
+  .roi-card-ico{width:38px;height:38px;background:rgba(201,168,76,0.15);border-radius:5px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .roi-card-ico svg{width:18px;height:18px;fill:var(--gold-light);}
+  .roi-card h3{font-size:12px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+  .roi-card p{font-size:13px;line-height:1.75;color:rgba(255,255,255,0.6);font-weight:300;}
+  .roi-card.hl{border-color:var(--gold);background:rgba(201,168,76,0.08);}
+  .roi-card.hl h3{color:var(--gold-light);}
+
+  .courses-s{background:var(--white);padding:100px 0;}
+  .car-outer{overflow:hidden;}
+  .car-track{display:flex;gap:20px;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
+  .cc{min-width:calc(33.333% - 14px);flex-shrink:0;background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform 0.3s,box-shadow 0.3s;}
+  .cc:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+  .cc-img{height:195px;position:relative;overflow:hidden;background:var(--green-mid);}
+  .cc-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.55s ease;display:block;}
+  .cc:hover .cc-img img{transform:scale(1.06);}
+  .cc-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(14,43,26,0.05) 0%,rgba(14,43,26,0.6) 100%);}
+  .cc-chip{position:absolute;bottom:12px;left:13px;font-size:8.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);background:rgba(6,22,16,0.72);padding:4px 10px;border-radius:2px;backdrop-filter:blur(6px);}
+  .cc-body{padding:17px 19px 19px;}
+  .cc-name{font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;letter-spacing:-0.01em;}
+  .cc-loc{font-size:11.5px;color:var(--text-light);display:flex;align-items:center;gap:4px;}
+  .cc-loc svg{width:11px;height:11px;fill:var(--text-light);}
+  .car-nav{display:flex;justify-content:center;gap:10px;margin-top:28px;}
+  .car-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .car-btn:hover{background:var(--gold);color:white;}
+
+  .cal-s{background:var(--off-white);padding:100px 0;}
+  .cal-wrap{max-width:860px;margin:0 auto;}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .cal-lbl{font-size:20px;font-weight:800;color:var(--green);letter-spacing:-0.02em;text-transform:uppercase;}
+  .cal-arr{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:white;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text-mid);transition:all 0.2s;line-height:1;cursor:pointer;}
+  .cal-arr:hover{border-color:var(--gold);color:var(--gold);}
+  .events-stack{display:flex;flex-direction:column;gap:12px;}
+  .event-row{display:flex;align-items:center;gap:16px;padding:16px 20px;background:white;border:1.5px solid var(--border);border-radius:var(--radius);transition:all 0.22s;cursor:default;}
+  .event-row:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateX(3px);}
+  .event-datebox{display:flex;flex-direction:column;align-items:center;min-width:54px;background:linear-gradient(160deg,var(--green) 0%,var(--green-accent) 100%);border-radius:5px;padding:9px 7px;flex-shrink:0;}
+  .eday{font-size:24px;font-weight:900;color:var(--gold-light);line-height:1;letter-spacing:-0.02em;}
+  .emo{font-size:8.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);}
+  .event-info{flex:1;}
+  .event-title{font-size:14.5px;font-weight:700;color:var(--green);margin-bottom:4px;letter-spacing:-0.01em;}
+  .event-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-light);}
+  .ev-chip{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 9px;border-radius:2px;white-space:nowrap;}
+  .ev-twilight{background:rgba(14,43,26,0.09);color:var(--green);}
+  .ev-18hole{background:rgba(201,168,76,0.16);color:var(--gold-dim);}
+  .ev-tournament{background:var(--green);color:white;}
+  .ev-simulator{background:rgba(0,0,0,0.06);color:var(--text-mid);}
+  .cal-empty{text-align:center;padding:40px 20px;font-size:13px;color:var(--text-light);font-weight:300;line-height:1.8;}
+  .cal-empty a{color:var(--gold-dim);font-weight:600;}
+  .cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:1px;}
+  .cal-dow{text-align:center;font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);padding:8px 0;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .cal-cell{background:white;min-height:80px;padding:8px;}
+  .cal-cell.other{background:#fafafa;}
+  .cal-cell.today .cal-dn{background:var(--green);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;}
+  .cal-dn{font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:3px;line-height:1;}
+  .cal-cell.other .cal-dn{color:#ccc;}
+  .cal-dot{font-size:9px;font-weight:600;padding:2px 5px;border-radius:2px;margin-bottom:2px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .d-tw{background:rgba(14,43,26,0.09);color:var(--green);}
+  .d-18{background:rgba(201,168,76,0.16);color:var(--gold-dim);}
+  .d-to{background:var(--green);color:white;}
+  .d-si{background:rgba(0,0,0,0.06);color:var(--text-mid);}
+  .cal-legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;}
+  .cal-leg-i{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-light);}
+  .cal-leg-d{width:10px;height:10px;border-radius:2px;}
+
+  .about-s{background:var(--cream);padding:100px 0;}
+  .about-g{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+  .about-header{grid-column:1/-1;text-align:center;margin-bottom:8px;}
+  .about-vis{position:relative;}
+  .about-panel{border-radius:var(--radius);height:420px;background:linear-gradient(160deg,var(--green) 0%,#172E20 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .about-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 70%,rgba(42,102,64,0.6),transparent 55%),radial-gradient(ellipse at 80% 20%,rgba(201,168,76,0.08),transparent 50%);}
+  .about-wm{font-size:88px;font-weight:900;color:rgba(255,255,255,0.04);position:absolute;letter-spacing:-0.04em;text-transform:uppercase;user-select:none;}
+  .about-stats{position:relative;z-index:2;display:flex;flex-direction:column;gap:3px;width:100%;padding:0 28px;}
+  .astat{background:rgba(255,255,255,0.07);border:1px solid rgba(201,168,76,0.18);padding:14px 19px;border-radius:4px;backdrop-filter:blur(6px);display:flex;align-items:baseline;gap:10px;}
+  .astat .an{font-size:26px;font-weight:900;color:var(--gold-light);line-height:1;letter-spacing:-0.025em;}
+  .astat .al{font-size:12px;color:rgba(255,255,255,0.58);font-weight:300;}
+  .about-acc{position:absolute;bottom:-13px;right:-13px;width:72px;height:72px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);}
+  .about-acc svg{width:32px;height:32px;fill:white;}
+  .about-copy .st{text-align:center;}
+  .about-copy p{font-size:14.5px;line-height:1.9;color:var(--text-mid);margin-bottom:18px;font-weight:300;}
+  .about-copy strong{color:var(--green);font-weight:600;}
+  .pillars{display:flex;flex-direction:column;gap:10px;margin-top:28px;}
+  .pillar{display:flex;align-items:flex-start;gap:13px;padding:14px 17px;background:white;border-radius:4px;border-left:2.5px solid var(--gold);}
+  .pillar svg{width:16px;height:16px;fill:var(--green-accent);flex-shrink:0;margin-top:3px;}
+  .pillar strong{display:block;font-size:11.5px;font-weight:700;color:var(--green);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;}
+  .pillar span{font-size:12.5px;color:var(--text-light);line-height:1.6;font-weight:300;}
+
+  .sp-s{background:var(--white);padding:100px 0;}
+  .sp-g{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;}
+  .sp-c{border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;}
+  .sp-c:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);}
+  .sp-c.feat{border-color:var(--gold);}
+  .sp-h{padding:20px;background:linear-gradient(160deg,var(--green) 0%,#1C4030 100%);}
+  .sp-c.feat .sp-h{background:linear-gradient(160deg,#061610 0%,var(--green-mid) 100%);}
+  .sp-tier{font-size:8.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .sp-price{font-size:21px;font-weight:800;color:white;letter-spacing:-0.01em;}
+  .sp-price span{font-size:12px;color:rgba(255,255,255,0.42);font-weight:300;margin-left:2px;}
+  .sp-body{padding:16px 18px;background:white;}
+  .sp-bens{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .sp-bens li{font-size:11.5px;color:var(--text-mid);display:flex;align-items:flex-start;gap:8px;line-height:1.5;font-weight:300;}
+  .sp-bens li svg{width:10.5px;height:10.5px;fill:var(--green-accent);flex-shrink:0;margin-top:2px;}
+  .sp-ctas{display:flex;gap:12px;justify-content:center;}
+  .btn-sp-g{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;background:var(--gold);color:white;border-radius:var(--radius-sm);transition:all 0.2s;display:inline-block;}
+  .btn-sp-g:hover{background:var(--gold-light);transform:translateY(-2px);}
+  .btn-sp-o{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;border:2px solid var(--green);color:var(--green);border-radius:var(--radius-sm);transition:all 0.2s;display:inline-block;}
+  .btn-sp-o:hover{background:var(--green);color:white;}
+
+  .partners-s{background:var(--off-white);padding:80px 0;border-top:1px solid var(--border);}
+  .partners-track-wrap{overflow:hidden;position:relative;}
+  .partners-track-wrap::before,.partners-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;}
+  .partners-track-wrap::before{left:0;background:linear-gradient(to right,var(--off-white),transparent);}
+  .partners-track-wrap::after{right:0;background:linear-gradient(to left,var(--off-white),transparent);}
+  .partners-scroll{display:flex;width:max-content;animation:pScroll 28s linear infinite;}
+  .partners-scroll:hover{animation-play-state:paused;}
+  .partners-set{display:flex;gap:72px;align-items:center;padding:8px 72px 8px 0;}
+  @keyframes pScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .p-logo{display:flex;align-items:center;justify-content:center;opacity:0.85;transition:opacity 0.25s,transform 0.25s;flex-shrink:0;background:white;border-radius:6px;padding:10px 18px;}
+  .p-logo:hover{opacity:1;transform:scale(1.05);}
+  .p-logo img{max-height:48px;max-width:160px;width:auto;height:auto;object-fit:contain;display:block;}
+  .p-logo:hover img{filter:none;}
+
+  .blog-s{background:var(--green-pale);padding:100px 0;}
+  .blog-g{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .blog-c{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);transition:all 0.3s;}
+  .blog-c:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+  .blog-th{height:145px;display:flex;align-items:center;justify-content:center;}
+  .blog-th svg{width:42px;height:42px;fill:rgba(255,255,255,0.16);}
+  .blog-b{padding:19px 21px;}
+  .blog-cat{font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;}
+  .blog-t{font-size:15.5px;font-weight:700;color:var(--green);margin-bottom:9px;line-height:1.35;letter-spacing:-0.01em;}
+  .blog-ex{font-size:12.5px;color:var(--text-light);line-height:1.75;margin-bottom:15px;font-weight:300;}
+  .blog-ft{font-size:10.5px;color:var(--text-light);display:flex;gap:10px;padding-top:13px;border-top:1px solid var(--border);}
+
+  .contact-s{padding:100px 0;background:linear-gradient(170deg,var(--green) 0%,#0A1E12 100%);position:relative;overflow:hidden;}
+  .contact-s::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 90% 10%,rgba(201,168,76,0.05) 0%,transparent 55%);pointer-events:none;}
+  .cg{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+  .citems{display:flex;flex-direction:column;gap:22px;}
+  .ci{display:flex;align-items:flex-start;gap:13px;}
+  .ci-ico{width:36px;height:36px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.2);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ci-ico svg{width:15px;height:15px;fill:var(--gold-light);}
+  .ci h4{font-size:9.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+  .ci p{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.65;font-weight:300;}
+  .ci a{color:rgba(255,255,255,0.65);transition:color 0.2s;}
+  .ci a:hover{color:var(--gold-light);}
+  .cform{display:flex;flex-direction:column;gap:13px;}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .fg{display:flex;flex-direction:column;gap:6px;}
+  .fg label{font-size:9.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.42);}
+  .fg input,.fg textarea,.fg select{background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.1);border-radius:3px;padding:11px 13px;font-size:13px;color:white;font-family:'Montserrat',sans-serif;font-weight:300;outline:none;resize:none;transition:border-color 0.2s;width:100%;}
+  .fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,0.25);}
+  .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--gold);}
+  .fg select option{background:#0E2B1A;color:white;}
+  .btn-sub{background:var(--gold);color:white;border:none;padding:14px 26px;font-size:11.5px;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;border-radius:var(--radius-sm);transition:all 0.22s;font-family:'Montserrat',sans-serif;cursor:pointer;}
+  .btn-sub:hover{background:var(--gold-light);transform:translateY(-2px);}
+
+  .footer{background:#050F09;padding:52px 0 28px;border-top:1px solid rgba(201,168,76,0.1);}
+  .ft{display:flex;gap:48px;justify-content:space-between;margin-bottom:44px;flex-wrap:wrap;}
+  .fb{max-width:240px;}
+  .fb-name{font-size:13.5px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+  .fb-tag{font-size:8.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:14px;}
+  .fb-desc{font-size:12.5px;color:rgba(255,255,255,0.32);line-height:1.75;font-weight:300;}
+  .fc h5{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:15px;}
+  .fc ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .fc ul a{font-size:12.5px;color:rgba(255,255,255,0.37);font-weight:300;transition:color 0.2s;}
+  .fc ul a:hover{color:white;}
+  .fdiv{height:1px;background:rgba(255,255,255,0.05);margin-bottom:22px;}
+  .fbot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .fbot p{font-size:11px;color:rgba(255,255,255,0.24);font-weight:300;}
+  .fbot a{color:rgba(255,255,255,0.24);}
+  .fbot a:hover{color:rgba(255,255,255,0.5);}
+  .fgold{height:2px;background:linear-gradient(90deg,transparent 0%,var(--gold) 30%,var(--gold-light) 50%,var(--gold) 70%,transparent 100%);opacity:0.28;margin-top:24px;}
+
+  @media(max-width:960px){
+    .nav{padding:0 20px;}
+    .nav-links,.nav-actions{display:none;}
+    .nav-hamburger{display:flex;}
+    .hero-inner,.sw{padding-left:24px;padding-right:24px;}
+    .vg,.pg,.sp-g,.blog-g{grid-template-columns:1fr;}
+    .about-g,.cg,.roi-g{grid-template-columns:1fr;gap:40px;}
+    .pc.top{transform:none;}
+    .mb-g,.frow{grid-template-columns:1fr;}
+    .ft{flex-direction:column;gap:32px;}
+    .fbot{flex-direction:column;}
+    .sp-g{grid-template-columns:repeat(2,1fr);}
+    .cal-cell{min-height:56px;}
+    .cal-dot{display:none;}
+  }
+`;
+
+/* DATA */
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const EVENTS={
+  "2026-04":[
+    {day:30,title:"Monthly Twilight 9",time:"5:30 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-05":[
+    {day:28,title:"Monthly Twilight 9",time:"6:00 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-06":[
+    {day:12,title:"18-Hole Round",time:"12:00 PM",course:"TBD",type:"18hole"},
+    {day:25,title:"Monthly Twilight 9",time:"5:30 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-07":[
+    {day:30,title:"Monthly Twilight 9",time:"5:30 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-08":[
+    {day:27,title:"Monthly Twilight 9",time:"5:30 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-09":[
+    {day:11,title:"18-Hole Round",time:"8:00 AM",course:"TBD",type:"18hole"},    
+    {day:24,title:"Monthly Twilight 9",time:"5:00 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-10":[
+    {day:17,title:"PGN Year-End Tournament",time:"8:00 AM",course:"TBD",type:"tournament"},
+    {day:22,title:"Monthly Twilight 9",time:"5:00 PM",course:"TBD",type:"twilight"},
+  ],
+  "2026-11":[
+    {day:19,title:"Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+  ],
+  "2026-12":[
+    {day:10,title:"Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+  ],
+  "2027-01":[
+    {day:14,title:"Winter Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+  ],
+  "2027-02":[
+    {day:18,title:"Winter Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+  ],
+  "2027-03":[
+    {day:25,title:"Spring Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+  ]
+};
+const COURSES=[
+  {name:"Quicksilver Golf Club",location:"Midway, PA",chip:"Featured Venue",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7cea4e6aa34cb4c49a1.png",alt:"Quicksilver"},
+  {name:"Cranberry Highlands GC",location:"Cranberry Township, PA",chip:"Member Favorite",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7c89bcdf086d1dfb0d0.jpg",alt:"Cranberry Highlands"},
+  {name:"Lindenwood Golf Club",location:"Canonsburg, PA",chip:"Classic Course",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7c874d020e518e89731.jpg",alt:"Lindenwood"},
+  {name:"The Club at Shadow Lakes",location:"Aliquippa, PA",chip:"Private Course",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7ced5a667daf6491e99.png",alt:"Shadow Lakes"},
+  {name:"Pittsburgh National GC",location:"Bakerstown, PA",chip:"Historic Venue",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7c293f130b200feb904.jpg",alt:"Pitt National"},
+  {name:"Totteridge Golf Club",location:"Greensburg, PA",chip:"18-Hole Venue",img:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7bc982fd67a35e441c0.jpg",alt:"Totteridge"},
+];
+const PARTNERS=[
+  {name:"POWER Marketing Company",url:"https://www.powermarketingcompany.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d8d0982fd67a35e4879e.png",alt:"POWER Marketing Company"},
+  {name:"Jiggy Putts",url:"https://www.puttsclub.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899a4e6aa34cb4c80c4.png",alt:"Putts Club"},
+  {name:"Solenture",url:"https://www.solenture.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899d5a667daf6495281.png",alt:"Solenture"},
+  {name:"OnPar Now",url:"https://onparnow.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899019dc508d3c654b2.png",alt:"On Par Now"},
+  {name:"TapNPay+",url:"https://www.tapnpayplus.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d8e393f130b200ff021c.png",alt:"TapNPay+"},
+];
+
+/* ICONS */
+function I({id,style}){return <svg viewBox="0 0 24 24" style={style}><use href={"#"+id}/></svg>;}
+
+/* HOOK */
+function useReveal(){
+  const r=useRef(null);
+  useEffect(()=>{
+    const el=r.current;if(!el)return;
+    const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add("in");obs.unobserve(el);}},{threshold:0.07});
+    obs.observe(el);
+    return()=>obs.disconnect();
+  },[]);
+  return r;
+}
+
+function NavLogo(){
+  return <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="Pittsburgh Golf Network" style={{height:"42px",width:"auto",display:"block"}}/>;
+}
+
+function Nav({scrolled}){
+  const[open,setOpen]=useState(false);
+  const links=[["#pricing","Membership"],["#courses","Courses"],["#calendar","Calendar"],["#sponsors","Sponsors"],["#blog","Blog"],["#contact","Contact"]];
+  const close=()=>setOpen(false);
+  return(
+    <>
+      <nav className={"nav"+(scrolled?" scrolled":"")}>
+        <a href="#home" className="nav-logo" onClick={close}>
+          <NavLogo/>
+          <div className="nav-logo-text">
+            <span className="nav-logo-primary">Pittsburgh Golf Network</span>
+            
+          </div>
+        </a>
+        <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h}>{l}</a></li>)}</ul>
+        <div className="nav-actions">
+          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer">Member Login</a>
+          <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer">Apply Now</a>
+        </div>
+        <button className={"nav-hamburger"+(open?" open":"")} onClick={()=>setOpen(o=>!o)} aria-label="Menu">
+          <span/><span/><span/>
+        </button>
+      </nav>
+      <div className={"mobile-menu"+(open?" open":"")}>
+        {links.map(([h,l])=><a key={h} href={h} onClick={close}>{l}</a>)}
+        <div className="mobile-menu-ctas">
+          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer" onClick={close}>Member Login</a>
+          <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer" onClick={close}>Apply Now</a>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Hero(){
+  return(
+    <section className="hero" id="home">
+      <div className="hero-mesh"/><div className="hero-grid"/>
+      <div className="hero-inner">
+        <div className="hero-eyebrow">Pittsburgh's Premier Golf Membership</div>
+        <h1 className="hero-headline">The <em>Links</em> Between<br/>Pittsburgh's Best<br/>Professionals</h1>
+        <p className="hero-tagline">Application-only. Curated foursomes. Real connections.</p>
+        <p className="hero-sub">An exclusive membership for Pittsburgh entrepreneurs, executives, and investors — combining the game you love with intentional business networking that actually moves the needle.</p>
+        <div className="hero-ctas">
+          <a href="https://signup.pittsburghgolfnetwork.com" className="btn-hero-p" target="_blank" rel="noreferrer">Apply for Membership</a>
+          <a href="#pricing" className="btn-hero-s">View Membership Options</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ValueSection(){
+  const rH=useReveal();
+  const cards=[
+    {icon:"i-target",title:"Custom-Curated Foursomes",body:"We survey every member and intentionally match you with the right connections. No random pairings — every round is designed to create real business opportunities."},
+    {icon:"i-golfball",title:"Deep Connections on the Course",body:"Multiple hours together on the course, followed by dinner and drinks, creates the kind of relationships that lead to partnerships and deals no conference ever could."},
+    {icon:"i-chart",title:"One Deal Pays for Itself",body:"One lead, one sale, one strategic partnership and the membership pays for itself. PGN members are Pittsburgh's most connected professionals."},
+  ];
+  return(
+    <section className="value-s" id="value">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">Why PGN</div><h2 className="st">Networking the Way It Should Be</h2><p className="ss">Forget corporate speed-dating and awkward happy hours. PGN is built on shared fairways, genuine conversation, and the kind of relationships that actually move your business forward.</p></div>
+        <div className="vg">
+          {cards.map((c,i)=>{const r=useReveal();return(
+            <div className="vc reveal" key={c.title} ref={r}>
+              <div className="vi"><I id={c.icon}/></div>
+              <h3>{c.title}</h3><p>{c.body}</p>
+            </div>
+          );})}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection(){
+  const rH=useReveal(),rM=useReveal(),rP=useReveal(),rC=useReveal(),rR=useReveal();
+  const plans=[
+    {tier:"Monthly",amt:"146",period:"/mo",was:"Regular: $195/mo",save:"Save $49 per month",top:false,desc:"Flexible month-to-month access. A great starting point to experience PGN before committing to a full season.",feats:["Monthly twilight events","Quarterly 18-hole events","Networking events","Member directory access","Exclusive PGN content","Cancel anytime"]},
+    {tier:"Season Pass",amt:"750",period:"Apr–Oct",was:"Regular: $1,000",save:"Best value for the full season",top:false,desc:"Commit to the full golf season and get the most out of every PGN event, from the first twilight round through the year-end tournament.",feats:["All monthly twilight events","All quarterly 18-hole events","Year-end tournament included","Networking events","Member directory access","Exclusive PGN content"]},
+    {tier:"Annual",amt:"1,346",period:"/yr",was:"Regular: $1,795/yr",save:"Save $449 annually",top:true,desc:"Full 12-month membership including off-season simulator outings. The complete PGN experience for those building their network year-round.",feats:["Everything in Season Pass","Off-season simulator outings","Priority event registration","Founding member status","Year-round exclusive content"]},
+  ];
+  return(
+    <section className="pricing-s" id="pricing">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">Membership Options</div><h2 className="st">Join the Network</h2><p className="ss">Flexible options designed to fit your season. All plans include full membership benefits.</p></div>
+        <div className="mb reveal" ref={rM}>
+          <div className="mb-lbl">Membership Includes</div>
+          <div className="mb-g">
+            {[["i-moon","Monthly 9-hole weeknight twilight events"],["i-users","Business networking events"],["i-flag","Quarterly 18-hole Friday golf events"],["i-book","Private member directory access"],["i-trophy","End of year member tournament"],["i-article","Exclusive PGN golf and business content"],["i-screen","Off-season simulator outings"],["i-target","Custom-curated foursome matching"]].map(([ic,t])=>(
+              <div className="mb-i" key={t}><I id={ic}/>{t}</div>
+            ))}
+          </div>
+        </div>
+        <div className="promo-bar reveal" ref={rP}>
+          <div><strong>Inaugural Season Discount — 25% Off All Memberships</strong><span>Get in on the ground floor. PGN is only growing, and founding members lock in charter pricing.</span></div>
+          <span className="promo-pill">Limited Time</span>
+        </div>
+        <div className="pg reveal" ref={rC}>
+          {plans.map(p=>(
+            <div className={"pc"+(p.top?" top":"")} key={p.tier}>
+              {p.top&&<div className="pc-pop">Most Popular</div>}
+              <div className="pc-h">
+                <div className="pc-tier">{p.tier}</div>
+                <div className="pc-amt-row"><span className="pc-cur">$</span><span className="pc-amt">{p.amt}</span><span className="pc-per">{p.period}</span></div>
+                <div className="pc-was">{p.was}</div>
+                <div className="pc-save">{p.save}</div>
+              </div>
+              <div className="pc-b">
+                <p className="pc-desc">{p.desc}</p>
+                <ul className="pc-feats">{p.feats.map(f=><li key={f}><I id="i-check"/>{f}</li>)}</ul>
+                <a href="https://signup.pittsburghgolfnetwork.com" className={"btn-pc"+(p.top?" gld":"")} target="_blank" rel="noreferrer">Apply Now</a>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="ref-strip reveal" ref={rR}>
+          <I id="i-gift"/>
+          <div><strong>Referral Program</strong><p>When you refer a new member by name, both of you receive your next monthly event at no charge. Play great golf, grow the network, and everyone benefits.</p></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ROISection(){
+  const rL=useReveal(),rR=useReveal();
+  return(
+    <section className="roi-s" id="includes">
+      <div className="sw">
+        <div className="roi-g">
+          <div className="reveal" ref={rL}>
+            <div className="eyebrow" style={{color:"var(--gold)"}}>The PGN Difference</div>
+            <h2 className="st st-l">A Membership Focused on ROI</h2>
+            <p className="ss ss-l" style={{marginBottom:32}}>Every round is engineered, not accidental. PGN uses a personalized pre-round survey to ensure you are always playing alongside people who can genuinely move your business forward.</p>
+            <div className="roi-survey">
+              <h4>The Pre-Round Survey</h4>
+              <p>Before every event, each member completes a short survey covering their industry, current business goals, ideal referral partners, and the types of connections they are actively seeking. We use those responses to build your foursome from the ground up.</p>
+            </div>
+            <div className="roi-steps">
+              {[{n:"1",t:"Complete Your Profile Survey",b:"Share your goals, industry, and the kinds of connections that would make the biggest impact on your business."},{n:"2",t:"We Build Your Foursome",b:"Our team cross-references every member's responses to pair you with three professionals who complement your goals."},{n:"3",t:"Play With Purpose",b:"Show up to a round where every conversation has context. No cold introductions. No wasted time."}].map(s=>(
+                <div className="roi-step" key={s.n}><div className="roi-num">{s.n}</div><div><strong>{s.t}</strong><span>{s.b}</span></div></div>
+              ))}
+            </div>
+          </div>
+          <div className="roi-cards reveal" ref={rR}>
+            {[{ic:"i-dollar",hl:true,t:"One Deal Covers Your Annual Membership",b:"A single new client, referral partnership, or strategic connection — and the membership has paid for itself entirely. PGN is not an expense. It is an investment with a clear return."},{ic:"i-network",hl:false,t:"The Ripple Effect",b:"Your foursome is just the starting point. PGN members are well-connected Pittsburgh professionals, and the real value often comes through introductions your playing partners can make on your behalf."},{ic:"i-flag",hl:false,t:"Competition That Builds Real Trust",b:"Winning a skin on the back nine with someone builds a different kind of rapport than exchanging business cards at a conference. That depth is what turns a round into a relationship."}].map(c=>(
+              <div className={"roi-card"+(c.hl?" hl":"")} key={c.t}>
+                <div className="roi-card-ico"><I id={c.ic}/></div>
+                <h3>{c.t}</h3><p>{c.b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CoursesSection(){
+  const[idx,setIdx]=useState(0);
+  const trackRef=useRef(null);
+  const rH=useReveal(),rC=useReveal();
+  const move=dir=>{
+    const vis=window.innerWidth>960?3:1;
+    setIdx(i=>Math.max(0,Math.min(COURSES.length-vis,i+dir)));
+  };
+  useEffect(()=>{
+    const t=trackRef.current;if(!t)return;
+    const c=t.querySelector(".cc");if(!c)return;
+    t.style.transform=`translateX(-${idx*(c.offsetWidth+20)}px)`;
+  },[idx]);
+  return(
+    <section className="courses-s" id="courses">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">Featured Courses</div><h2 className="st">Pittsburgh's Premier Fairways</h2><p className="ss">PGN members play some of the finest courses the greater Pittsburgh area has to offer.</p></div>
+        <div className="car-outer reveal" ref={rC}>
+          <div className="car-track" ref={trackRef}>
+            {COURSES.map(c=>(
+              <div className="cc" key={c.name}>
+                <div className="cc-img">
+                  <img src={c.img} alt={c.name} onError={e=>{if(e.target.src!==c.fallback)e.target.src=c.fallback;}}/>
+                  <div className="cc-scrim"/><div className="cc-chip">{c.chip}</div>
+                </div>
+                <div className="cc-body"><div className="cc-name">{c.name}</div><div className="cc-loc"><I id="i-pin"/>{c.location}</div></div>
+              </div>
+            ))}
+          </div>
+          <div className="car-nav">
+            <button className="car-btn" onClick={()=>move(-1)}>&#8249;</button>
+            <button className="car-btn" onClick={()=>move(1)}>&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CalendarSection(){
+  const[year,setYear]=useState(2026);
+  const[mo,setMo]=useState(3);
+  const rH=useReveal(),rC=useReveal();
+  const change=d=>{let m=mo+d,y=year;if(m>11){m=0;y++;}if(m<0){m=11;y--;}setMo(m);setYear(y);};
+  const key=`${year}-${String(mo+1).padStart(2,"0")}`;
+  const monthEvs=EVENTS[key]||[];
+  const sorted=[...monthEvs].sort((a,b)=>a.day-b.day);
+  const dCls={twilight:"d-tw","18hole":"d-18",tournament:"d-to",simulator:"d-si"};
+  const dLbl={twilight:"Twilight 9","18hole":"18 Holes",tournament:"Tournament",simulator:"Simulator"};
+  return(
+    <section className="cal-s" id="calendar">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">Events Calendar</div><h2 className="st">Upcoming Events</h2><p className="ss">Monthly twilight rounds, quarterly 18-hole events, and more — stay current with everything PGN has on the schedule.</p></div>
+        <div className="cal-wrap reveal" ref={rC}>
+          <div className="cal-nav">
+            <button className="cal-arr" onClick={()=>change(-1)}>&#8249;</button>
+            <div className="cal-lbl">{MONTHS[mo]} {year}</div>
+            <button className="cal-arr" onClick={()=>change(1)}>&#8250;</button>
+          </div>
+          {sorted.length===0?(
+            <div className="cal-empty">No events scheduled this month. <a href="#contact">Contact us</a> for updates.</div>
+          ):(
+            <div className="events-stack">
+              {sorted.map((ev,i)=>(
+                <div className="event-row" key={i}>
+                  <div className="event-datebox">
+                    <span className="eday">{ev.day}</span>
+                    <span className="emo">{MONTHS[mo].slice(0,3)}</span>
+                  </div>
+                  <div className="event-info">
+                    <div className="event-title">{ev.title}</div>
+                    <div className="event-meta">
+                      <span><svg viewBox="0 0 24 24" style={{width:"10px",height:"10px",fill:"#888",marginRight:"3px"}}><use href="#i-cal"/></svg>{ev.time}</span>
+                      <span><svg viewBox="0 0 24 24" style={{width:"10px",height:"10px",fill:"#888",marginRight:"3px"}}><use href="#i-pin"/></svg>{ev.course}</span>
+                    </div>
+                  </div>
+                  <span className={"ev-chip "+dCls[ev.type]}>{dLbl[ev.type]}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutSection(){
+  const rV=useReveal(),rT=useReveal(),rH=useReveal();
+  return(
+    <section className="about-s" id="about">
+      <div className="sw">
+        <div className="about-g">
+          <div className="about-header reveal" ref={rH}>
+            <div className="eyebrow">About Us</div>
+            <h2 className="st">Where Business Gets Done on the Back Nine</h2>
+          </div>
+          <div className="about-vis reveal" ref={rV}>
+            <div className="about-panel">
+              <div className="about-wm">PGN</div>
+              <div className="about-stats">
+                {[["6+","Premier courses in the PGN rotation"],["15+","Professional networking events per year"],["Only","Business-focused golf membership in Pittsburgh"]].map(([n,l])=>(
+                  <div className="astat" key={n}><span className="an">{n}</span><span className="al">{l}</span></div>
+                ))}
+              </div>
+            </div>
+            <div className="about-acc"><I id="i-golf"/></div>
+          </div>
+          <div className="about-copy reveal" ref={rT}>
+            <p>Pittsburgh Golf Network was started by two lifelong friends — ex-college baseball players, avid golfers, and business partners — who kept running into the same problem: the best professional conversations they had were never happening in a conference room. They were happening on the golf course.</p>
+            <p>After years of experiencing firsthand how a four-hour round could build more trust than a dozen networking events, they decided to stop leaving it to chance. PGN was built to do intentionally what golf has always done naturally — bring the right people together in the right environment and let real relationships form.</p>
+            <p>We are Pittsburgh's only business-focused golf membership, and we take both sides of that seriously. The golf is real — great courses, well-organized events, and a community that genuinely loves the game. The business value is just as real — curated foursomes, a handpicked member network, and the kind of organic introductions that actually lead somewhere.</p>
+            <div className="pillars">
+              {[
+                {ic:"i-target",t:"Intentional by Design",b:"Every foursome is built around your goals. We survey each member before every event and match you with people who can actually move the needle for your business."},
+                {ic:"i-heart",t:"The Game We Love",b:"Golf has a way of revealing character, building trust, and creating memories. We built PGN around that truth — and around courses worth showing up for."},
+                {ic:"i-chart",t:"A Network That Works",b:"Our members are Pittsburgh entrepreneurs, executives, and investors who are serious about growth. One conversation on the course can open a door that a hundred cold emails never could."},
+              ].map(p=>(
+                <div className="pillar" key={p.t}><I id={p.ic}/><div><strong>{p.t}</strong><span>{p.b}</span></div></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SponsorsSection(){
+  const rH=useReveal(),rG=useReveal(),rC=useReveal();
+  const tiers=[
+    {t:"Presenting Sponsor",price:"$10,000",per:"/yr",feat:true,bens:["Name in PGN title — PGN Presented by [Company]","Logo on all marketing materials","4 complimentary memberships","Exclusive rights to 1 event per season","Featured speaker slot at 1 event"]},
+    {t:"Season Sponsor",price:"$5,000",per:"/yr",feat:false,bens:["Logo on website, email, and event materials","2 complimentary memberships","Speaking slot at the Year-End event","Social media and email shoutouts"]},
+    {t:"Event Sponsor",price:"$2,500",per:"/event",feat:false,bens:["Logo featured at the specific event","Branded tee marker and table","1 complimentary player spot","Social and email mention"]},
+    {t:"Hole Sponsor",price:"$500",per:"/event",feat:false,bens:["Branded sign at 1 designated hole","Name featured in event program","A strong entry point for smaller firms"]},
+  ];
+  return(
+    <section className="sp-s" id="sponsors">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">Corporate Partners</div><h2 className="st">Become a PGN Sponsor</h2><p className="ss">Put your brand in front of Pittsburgh's most engaged professional network. Opportunities available for organizations of every size.</p></div>
+        <div className="sp-g reveal" ref={rG}>
+          {tiers.map(t=>(
+            <div className={"sp-c"+(t.feat?" feat":"")} key={t.t}>
+              <div className="sp-h"><div className="sp-tier">{t.t}</div><div className="sp-price">{t.price}<span>{t.per}</span></div></div>
+              <div className="sp-body"><ul className="sp-bens">{t.bens.map(b=><li key={b}><I id="i-check"/>{b}</li>)}</ul></div>
+            </div>
+          ))}
+        </div>
+        <div className="sp-ctas reveal" ref={rC}>
+          <a href="https://sponsors.pittsburghgolfnetwork.com" className="btn-sp-g" target="_blank" rel="noreferrer">Become a Sponsor</a>
+          <a href="#contact" className="btn-sp-o">Contact Us</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PartnersSection(){
+  const rH=useReveal();
+  const logos=PARTNERS.map((p,i)=>(
+    <a key={i} href={p.url} className="p-logo" target="_blank" rel="noreferrer" title={p.name}>
+      <img src={p.logo} alt={p.name} onError={e=>{e.target.style.display="none";const s=document.createElement("span");s.style.cssText="font-family:Montserrat,sans-serif;font-weight:800;font-size:14px;letter-spacing:0.05em;text-transform:uppercase;color:#111;white-space:nowrap;";s.textContent=p.name;e.target.parentNode.appendChild(s);}}/>
+    </a>
+  ));
+  return(
+    <section className="partners-s" id="partners">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}>
+          <div className="eyebrow">Active Partners</div>
+          <h2 className="st">Our Active Partners</h2>
+          <p className="ss">PGN is proud to partner with leading Pittsburgh-area businesses who share our commitment to professional growth and the game of golf.</p>
+        </div>
+      </div>
+      <div className="partners-track-wrap">
+        <div className="partners-scroll" aria-hidden="false">
+          <div className="partners-set">{logos}</div>
+          <div className="partners-set" aria-hidden="true">{logos}</div>
+		  <div className="partners-set" aria-hidden="true">{logos}</div>
+		  <div className="partners-set" aria-hidden="true">{logos}</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BlogSection(){
+  const rH=useReveal(),rG=useReveal();
+  const posts=[
+    {bg:"linear-gradient(135deg,#0E2B1A,#2A6640)",ic:"i-flag",cat:"Course Spotlight",t:"Why Quicksilver Remains One of Pittsburgh's Hidden Gems",ex:"A look at the championship-caliber layout that hosts some of PGN's most memorable rounds each season."},
+    {bg:"linear-gradient(135deg,#1E2A3A,#2D3D5A)",ic:"i-work",cat:"Business and Golf",t:"How to Network on the Course Without Making It Awkward",ex:"The unwritten rules of mixing business and golf, and how PGN makes the whole thing feel completely natural."},
+    {bg:"linear-gradient(135deg,#3A2A1A,#5A4A2D)",ic:"i-trophy",cat:"Member Stories",t:"From Tee Box to Business Partner Inside PGN's First Season",ex:"How two members met at a PGN twilight event and closed a deal together just three months later."},
+  ];
+  return(
+    <section className="blog-s" id="blog">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}><div className="eyebrow">PGN Content</div><h2 className="st">Golf. Business. Pittsburgh.</h2><p className="ss">Insights, course spotlights, member stories, and business content curated for the PGN community.</p></div>
+        <div className="blog-g reveal" ref={rG}>
+          {posts.map(p=>(
+            <div className="blog-c" key={p.t}>
+              <div className="blog-th" style={{background:p.bg}}><I id={p.ic}/></div>
+              <div className="blog-b">
+                <div className="blog-cat">{p.cat}</div>
+                <div className="blog-t">{p.t}</div>
+                <div className="blog-ex">{p.ex}</div>
+                <div className="blog-ft"><span>Coming Soon</span><span style={{opacity:0.4}}>|</span><span>PGN Editorial</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactSection(){
+  const[sent,setSent]=useState(false);
+  const rH=useReveal(),rG=useReveal();
+  const handleSubmit=e=>{e.preventDefault();setSent(true);setTimeout(()=>setSent(false),4000);};
+  return(
+    <section className="contact-s" id="contact">
+      <div className="sw">
+        <div className="sh reveal" ref={rH}>
+          <div className="eyebrow" style={{color:"var(--gold)"}}>Get In Touch</div>
+          <h2 className="st st-l">Let's Connect</h2>
+          <p className="ss ss-l">Questions about membership or sponsorships? We would love to hear from you.</p>
+        </div>
+        <div className="cg reveal" ref={rG}>
+          <div className="citems">
+            {[{ic:"i-mail",label:"Email",c:<><a href="mailto:golf@pittsburghgolfnetwork.com">golf@pittsburghgolfnetwork.com</a></>},{ic:"i-pin",label:"Based In",c:<>Pittsburgh, Pennsylvania<br/>Serving the greater Pittsburgh metro area</>},{ic:"i-cal",label:"Season",c:<>April through October on the course, with simulator outings and events continuing through the winter months.</>},{ic:"i-link",label:"Quick Links",c:<><a href="https://signup.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Apply for Membership</a><br/><a href="https://sponsors.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Become a Sponsor</a><br/><a href="https://members.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Member Login</a></>}].map(ci=>(
+              <div className="ci" key={ci.label}>
+                <div className="ci-ico"><I id={ci.ic}/></div>
+                <div><h4>{ci.label}</h4><p>{ci.c}</p></div>
+              </div>
+            ))}
+          </div>
+          <form className="cform" onSubmit={handleSubmit}>
+            <div className="frow">
+              <div className="fg"><label>First Name</label><input type="text" placeholder="John"/></div>
+              <div className="fg"><label>Last Name</label><input type="text" placeholder="Smith"/></div>
+            </div>
+            <div className="fg"><label>Email</label><input type="email" placeholder="john@company.com"/></div>
+            <div className="fg"><label>Company and Title</label><input type="text" placeholder="CEO, Smith Ventures"/></div>
+            <div className="fg">
+              <label>I'm Interested In</label>
+              <select defaultValue=""><option value="" disabled>Select one</option><option>Membership Inquiry</option><option>Corporate Sponsorship</option><option>General Question</option><option>Media and Press</option></select>
+            </div>
+            <div className="fg"><label>Message</label><textarea rows={4} placeholder="Tell us a little about yourself and what you are looking for..."/></div>
+            <button type="submit" className="btn-sub" style={sent?{background:"var(--green-accent)"}:{}}>{sent?"Message Sent":"Send Message"}</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer(){
+  const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://members.pittsburghgolfnetwork.com"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
+  return(
+    <footer className="footer">
+      <div className="sw">
+        <div className="ft">
+          <div className="fb"><div className="fb-name">Pittsburgh Golf Network</div><div className="fb-tag">The Links Between Pittsburgh's Best Professionals</div><div className="fb-desc">An application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors.</div></div>
+          {cols.map(col=>(
+            <div className="fc" key={col.h}><h5>{col.h}</h5><ul>{col.links.map(([l,h])=><li key={l}><a href={h} target={h.startsWith("http")?"_blank":undefined} rel="noreferrer">{l}</a></li>)}</ul></div>
+          ))}
+        </div>
+        <div className="fdiv"/>
+        <div className="fbot"><p>2026 Pittsburgh Golf Network. All rights reserved.</p><p><a href="/privacy-policy">Privacy Policy</a>&nbsp;&middot;&nbsp;<a href="/terms">Terms of Service</a></p></div>
+        <div className="fgold"/>
+      </div>
+    </footer>
+  );
+}
+
+/* ICON DEFS */
+function IconDefs(){
+  return(
+    <svg xmlns="http://www.w3.org/2000/svg" style={{display:"none"}}>
+      <symbol id="i-target" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 2a8 8 0 1 1 0 16A8 8 0 0 1 12 4zm0 2a6 6 0 1 0 0 12A6 6 0 0 0 12 6zm0 2a4 4 0 1 1 0 8A4 4 0 0 1 12 8zm0 2a2 2 0 1 0 0 4A2 2 0 0 0 12 10z"/></symbol>
+      <symbol id="i-handshake" viewBox="0 0 24 24"><path d="M20.4 5.6A2 2 0 0 0 18 5h-4.2l-1-1H9a2 2 0 0 0-1.4.6L4.2 8H2v10h3l1 1h13l1-1h1V8h-2.2l-.4-.4zM20 16h-1l-1 1H7l-1-1H5V9.6l3.2-3.2.6-.4H12l1 1H18a.5.5 0 0 1 .4.2l1.6 1.6V16z"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18v-2H5V3H3zm4 11h2v3H7v-3zm4-4h2v7h-2v-7zm4-4h2v11h-2V6z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></symbol>
+      <symbol id="i-flag" viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></symbol>
+      <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V18H9v2h6v-2h-2v-2.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zm0 3c0 1.65-1.35 3-3 3h-.27C15.9 10.35 16 9.69 16 9V7h3v1zM5 8V7h3v2c0 .69.1 1.35.27 1.98H8C6.35 11 5 9.65 5 8z"/></symbol>
+      <symbol id="i-golf" viewBox="0 0 24 24"><path d="M17 3L9 6.58V2H7v20h2v-8.51l8 3.6V6.37L17 3zm0 10.67l-6-2.69V8.02l6 2.69v2.96z"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z"/></symbol>
+      <symbol id="i-screen" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zM9 8l4 2.4L17 8v5l-4 2.4L9 13V8z"/></symbol>
+      <symbol id="i-article" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></symbol>
+      <symbol id="i-gift" viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.29.18-.57.18-.88A3.12 3.12 0 0 0 14.88 2c-1.3 0-2.43.8-3.07 1.94L12 4.96l-.81-1.02C10.43 2.8 9.3 2 8 2a3.12 3.12 0 0 0-3.12 3.12c0 .31.11.59.18.88H3C2 6 1 7 1 8v2c0 1.11.89 2 2 2v7c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-7c1.11 0 2-.89 2-2V8c0-1-1-2-2-2zm-6-2.5c.83 0 1.5.67 1.5 1.5S14.83 6.5 14 6.5h-1.5v-.24c.09-.7.71-2.26 1.5-2.26zM8 3.5c.83 0 1.5.67 1.5 1.5S8.83 6.5 8 6.5c-.79 0-1.41-1.56-1.5-2.26V4c0-.83.67-1.5 1.5-1.5zM11 19H6v-7h5v7zm0-9H3V8h8v2zm6 9h-5v-7h5v7zm2-9h-8V8h8v2z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></symbol>
+      <symbol id="i-link" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></symbol>
+      <symbol id="i-work" viewBox="0 0 24 24"><path d="M10 16v-1H3.01L3 19c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-4h-7v1h-4zm10-9h-4.01V5l-2-2h-4l-2 2v2H4c-1.1 0-2 .9-2 2v3c0 1.11.89 2 2 2h7v-2h6v2h7c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-6 0h-4V5h4v2z"/></symbol>
+      <symbol id="i-dollar" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></symbol>
+      <symbol id="i-network" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zM7 12c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zM12 2C9.24 2 7 4.24 7 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></symbol>
+      <symbol id="i-golfball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm0 1.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zm-1 3.5h2v1.5h1.5v2H13V13h-2v-1.5H9.5v-2H11V8z" fill="none"/><circle cx="12" cy="12" r="7.5"/><circle cx="10" cy="9" r="0.8" fill="white"/><circle cx="14" cy="9" r="0.8" fill="white"/><circle cx="9" cy="12" r="0.8" fill="white"/><circle cx="12" cy="11" r="0.8" fill="white"/><circle cx="15" cy="12" r="0.8" fill="white"/><circle cx="10.5" cy="14.5" r="0.8" fill="white"/><circle cx="13.5" cy="14.5" r="0.8" fill="white"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+    </svg>
+  );
+}
+
+/* APP */
+
+function LegalPage({type}){
+  const isPrivacy = type==="privacy";
+  const title = isPrivacy ? "Privacy Policy" : "Terms of Service";
+  return(
+    <div style={{fontFamily:"Montserrat,sans-serif",background:"#F8F7F4",minHeight:"100vh"}}>
+      <div style={{background:"#0E2B1A",padding:"20px 48px",display:"flex",alignItems:"center",gap:"14px"}}>
+        <a href="/" style={{display:"flex",alignItems:"center",gap:"12px",textDecoration:"none"}} onClick={e=>{e.preventDefault();window.location.hash='';window.location.reload();}}>
+          <svg viewBox="0 0 42 42" fill="none" style={{width:"36px",height:"36px"}}>
+            <circle cx="21" cy="14" r="12" fill="#0E2B1A" stroke="#C9A84C" strokeWidth="1.5"/>
+            <circle cx="21" cy="14" r="9.5" fill="white" opacity="0.93"/>
+            <path d="M9 27 Q21 22 33 27 Q21 36 9 27Z" fill="#2A6640"/>
+            <line x1="21" y1="24.5" x2="21" y2="30.5" stroke="#C9A84C" strokeWidth="1"/>
+            <polygon points="21,24.5 26,26.5 21,28.5" fill="#C9A84C"/>
+          </svg>
+          <span style={{color:"white",fontWeight:700,fontSize:"13px",letterSpacing:"0.06em",textTransform:"uppercase"}}>Pittsburgh Golf Network</span>
+        </a>
+      </div>
+      <div style={{maxWidth:"800px",margin:"0 auto",padding:"60px 48px 80px"}}>
+        <a href="/" onClick={e=>{e.preventDefault();window.location.hash='';window.location.reload();}} style={{display:"inline-flex",alignItems:"center",gap:"6px",fontSize:"12px",fontWeight:600,letterSpacing:"0.08em",textTransform:"uppercase",color:"#9A7A32",textDecoration:"none",marginBottom:"36px"}}>
+          &#8592; Back to Pittsburgh Golf Network
+        </a>
+        {isPrivacy ? <PrivacyContent/> : <TermsContent/>}
+      </div>
+      <div style={{background:"#050F09",padding:"28px 48px",textAlign:"center"}}>
+        <p style={{fontSize:"12px",color:"rgba(255,255,255,0.35)",fontWeight:300}}>© 2026 Pittsburgh Golf Network. All rights reserved. &nbsp;·&nbsp; <a href="/" onClick={e=>{e.preventDefault();window.location.hash='';window.location.reload();}} style={{color:"rgba(255,255,255,0.35)"}}>Home</a></p>
+      </div>
+    </div>
+  );
+}
+
+const legalStyles = {
+  h1:{fontFamily:"Montserrat,sans-serif",fontSize:"32px",fontWeight:800,color:"#0E2B1A",marginBottom:"8px",letterSpacing:"-0.02em",textTransform:"uppercase"},
+  eff:{fontSize:"13px",color:"#888",marginBottom:"40px",fontWeight:300},
+  h2:{fontFamily:"Montserrat,sans-serif",fontSize:"16px",fontWeight:700,color:"#0E2B1A",marginTop:"36px",marginBottom:"10px",textTransform:"uppercase",letterSpacing:"0.04em"},
+  h3:{fontFamily:"Montserrat,sans-serif",fontSize:"13.5px",fontWeight:700,color:"#0E2B1A",marginTop:"20px",marginBottom:"8px"},
+  p:{fontSize:"14px",lineHeight:"1.85",color:"#444",marginBottom:"14px",fontWeight:300},
+  li:{fontSize:"14px",lineHeight:"1.85",color:"#444",marginBottom:"6px",fontWeight:300,marginLeft:"20px"},
+  divider:{height:"1px",background:"rgba(201,168,76,0.25)",margin:"32px 0"},
+};
+
+function TermsContent(){
+  return(
+    <div>
+      <h1 style={legalStyles.h1}>Terms of Service</h1>
+      <p style={legalStyles.eff}>Effective Date: April 7, 2026 &nbsp;&middot;&nbsp; Last Updated: April 7, 2026</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>1. Introduction and Acceptance of Terms</h2>
+      <p style={legalStyles.p}>Welcome to Pittsburgh Golf Network ("PGN," "we," "us," or "our"). These Terms of Service ("Terms") govern your access to and use of PGN's membership services, events, digital platforms, and associated benefits. By submitting a membership application, completing a purchase, or participating in any PGN event or program, you agree to be bound by these Terms in their entirety.</p>
+      <p style={legalStyles.p}>If you do not agree to these Terms, you may not access or use PGN's services. We reserve the right to update or modify these Terms at any time. Material changes will be communicated via email to the address on file. Continued use of PGN services following notice of changes constitutes acceptance of the revised Terms.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>2. Membership Eligibility and Application</h2>
+      <p style={legalStyles.p}>PGN is an application-only membership community for Pittsburgh-area entrepreneurs, executives, and investors. Submission of an application does not guarantee membership. We reserve the right to approve or deny any application at our sole discretion, for any reason or no stated reason.</p>
+      <p style={legalStyles.p}>By applying, you represent that all information provided is accurate and complete. Misrepresentation of any kind may result in immediate termination of membership without refund.</p>
+      <p style={legalStyles.p}>There is no minimum age requirement; however, all members are expected to conduct themselves as professionals in accordance with the Code of Conduct set forth in Section 10 of these Terms.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>3. Membership Tiers and Benefits</h2>
+      <p style={legalStyles.p}>PGN offers three membership tiers. All tiers are subject to the terms described herein, including the subscription, billing, and cancellation policies in Section 4.</p>
+
+      <h3 style={legalStyles.h3}>3.1 Monthly Membership</h3>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}>Billing: Charged on the date of initial purchase and recurring on the same calendar date each month (e.g., a purchase on April 15 renews on May 15, June 15, etc.)</li>
+        <li style={legalStyles.li}>Auto-Renewal: Yes — renews automatically each month until cancelled</li>
+        <li style={legalStyles.li}>Pricing in future months is subject to change and is not guaranteed at any previously offered rate. Price changes will be communicated at least 14 days before the renewal date.</li>
+        <li style={legalStyles.li}>Access: Full membership benefits for the duration of each active monthly period</li>
+      </ul>
+
+      <h3 style={legalStyles.h3}>3.2 Season Pass</h3>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}>Coverage Period: April 1 through October 31 of the applicable season</li>
+        <li style={legalStyles.li}>Auto-Renewal: Yes — renews automatically each year on April 1 until cancelled</li>
+        <li style={legalStyles.li}>Pre-Renewal Notice: PGN will send a reminder notification at least 14 days before each annual renewal date</li>
+        <li style={legalStyles.li}>Pricing in future seasons is subject to change and is not guaranteed at any previously offered rate</li>
+        <li style={legalStyles.li}>Access: Full membership benefits for the April–October season period</li>
+      </ul>
+
+      <h3 style={legalStyles.h3}>3.3 Annual Membership</h3>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}>Billing: Charged on the date of initial purchase and recurring on the same calendar date each year (e.g., a purchase on April 15, 2026 renews on April 15, 2027)</li>
+        <li style={legalStyles.li}>Auto-Renewal: Yes — renews automatically each year until cancelled</li>
+        <li style={legalStyles.li}>Pre-Renewal Notice: PGN will send a reminder notification at least 14 days before each annual renewal date</li>
+        <li style={legalStyles.li}>Pricing in future years is subject to change and is not guaranteed at any previously offered rate</li>
+        <li style={legalStyles.li}>Access: Full 12-month membership including off-season simulator outings</li>
+      </ul>
+
+      <h3 style={legalStyles.h3}>3.4 Membership Benefits</h3>
+      <p style={legalStyles.p}>All active membership tiers include the following benefits, subject to availability and these Terms:</p>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}>Monthly 9-hole weeknight twilight events</li>
+        <li style={legalStyles.li}>Quarterly 18-hole Friday golf events</li>
+        <li style={legalStyles.li}>Business networking events</li>
+        <li style={legalStyles.li}>Private member directory access (subject to Section 7)</li>
+        <li style={legalStyles.li}>Custom-curated foursome matching via the PGN pre-round survey</li>
+        <li style={legalStyles.li}>Exclusive PGN golf and business content</li>
+      </ul>
+      <p style={legalStyles.p}>The following benefit is exclusive to Monthly and Annual Members:</p>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}>Off-season simulator outings (venue to be announced; simulator usage fees are not included in membership and must be paid directly to the venue — see Section 3.5)</li>
+      </ul>
+
+      <h3 style={legalStyles.h3}>3.5 Important: Event and Venue Costs Not Included</h3>
+      <p style={legalStyles.p}>PGN membership grants access to organized events and the PGN network. It does NOT cover the cost of golf. Members are responsible for paying the following directly to the host venue at each event: greens fees, cart fees, and simulator facility fees. Failure to pay venue fees may result in restricted access to future events.</p>
+
+      <h3 style={legalStyles.h3}>3.6 Year-End Tournament</h3>
+      <p style={legalStyles.p}>The PGN Year-End Member Tournament is not included in any membership tier. Entry fees for the year-end tournament will be communicated separately and must be paid in addition to membership dues.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>4. Billing, Auto-Renewal, and Cancellation</h2>
+
+      <h3 style={legalStyles.h3}>4.1 Payment Authorization</h3>
+      <p style={legalStyles.p}>By purchasing a membership, you authorize PGN to charge your payment method on file for the applicable membership fee at the frequency described in Section 3. You represent that you are authorized to use the payment method provided.</p>
+
+      <h3 style={legalStyles.h3}>4.2 Auto-Renewal — Monthly Membership</h3>
+      <p style={legalStyles.p}>Monthly memberships renew automatically on the same calendar date each month. There is no required cancellation notice period; however, to avoid being charged for the next billing cycle, cancellation must be completed before your renewal date. Members retain access through the end of their current paid period.</p>
+
+      <h3 style={legalStyles.h3}>4.3 Auto-Renewal — Annual Membership</h3>
+      <p style={legalStyles.p}>Annual memberships renew automatically on the one-year anniversary of the original purchase date. PGN will send a written reminder to the email address on file at least 14 days prior to the renewal date. To avoid being charged for the next annual period, cancellation must be completed before the renewal date. Members retain access through the end of their current paid annual period. No refunds are issued for early cancellation.</p>
+
+      <h3 style={legalStyles.h3}>4.4 Auto-Renewal — Season Pass</h3>
+      <p style={legalStyles.p}>Season Passes renew automatically on April 1 of each year. PGN will send a written reminder to the email address on file at least 14 days prior to the renewal date. To avoid being charged for the next season, cancellation must be completed before the renewal date. Members retain access through the end of their current paid season period. No refunds are issued for early cancellation.</p>
+
+      <h3 style={legalStyles.h3}>4.5 How to Cancel</h3>
+      <p style={legalStyles.p}>To cancel your membership, contact PGN via email at <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a>. Please include your full name, email address on file, and the membership tier you wish to cancel. Cancellations are processed within 3 business days of receipt of request. You will receive a confirmation email upon cancellation.</p>
+
+      <h3 style={legalStyles.h3}>4.6 Refund Policy</h3>
+      <p style={legalStyles.p}>All membership fees are non-refundable. This applies to all tiers, including mid-cycle cancellations of Monthly and Annual memberships, and Season Passes. PGN reserves the right, at its sole discretion, to make exceptions to this policy in extraordinary circumstances. Any such exceptions do not create an obligation to provide refunds in future cases.</p>
+
+      <h3 style={legalStyles.h3}>4.7 Failed Payments</h3>
+      <p style={legalStyles.p}>If a payment fails, PGN will attempt to notify you via email. Your membership access may be suspended until payment is successfully processed. PGN reserves the right to terminate a membership for non-payment after reasonable notice.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>5. Inaugural Season Discount</h2>
+      <p style={legalStyles.p}>PGN is currently offering a 25% Inaugural Season Discount on all membership tiers. This discount is available for a limited time and subject to the following terms:</p>
+
+      <h3 style={legalStyles.h3}>5.1 Monthly Membership — Discount Terms</h3>
+      <p style={legalStyles.p}>Members who purchase a Monthly Membership at the discounted rate will receive the discounted price on all billing cycles through March 31, 2027. Beginning with the first renewal date on or after April 1, 2027, the membership will automatically renew at the then-current standard rate. PGN will notify affected members of this rate change at least 14 days in advance of the transition.</p>
+
+      <h3 style={legalStyles.h3}>5.2 Season Pass — Discount Terms</h3>
+      <p style={legalStyles.p}>The Inaugural Discount applies to one (1) Season Pass transaction only. Season Pass renewals in subsequent seasons will be priced at the then-current standard rate and are not eligible for the Inaugural Discount. Notice of any rate changes will be communicated at least 14 days in advance of the renewal date.</p>
+
+      <h3 style={legalStyles.h3}>5.3 Annual Membership — Discount Terms</h3>
+      <p style={legalStyles.p}>The Inaugural Discount applies to one (1) Annual Membership transaction only. The first auto-renewal of an Annual Membership purchased at the discounted rate will be charged at the then-current standard rate. PGN will notify affected members of this rate change at least 14 days in advance of the renewal date.</p>
+
+      <h3 style={legalStyles.h3}>5.4 Discount Availability</h3>
+      <p style={legalStyles.p}>PGN reserves the right to discontinue the Inaugural Season Discount at any time. Once the discount period ends, new memberships will be offered at standard rates only.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>6. Referral Program</h2>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}><strong>Eligibility:</strong> Both the referring member ("Referrer") and the newly referred member ("Referred Member") must be active, paying PGN members at the time the reward is issued.</li>
+        <li style={legalStyles.li}><strong>Reward:</strong> Upon a successful referral, both the Referrer and the Referred Member will each receive one (1) complimentary round of golf (covering green fee and cart fee) at a PGN monthly 9-hole twilight event. The complimentary round does not apply to quarterly 18-hole events.</li>
+        <li style={legalStyles.li}><strong>Arrangement:</strong> Complimentary rounds are coordinator-arranged. PGN will cover the green fee and cart fee directly with the host course on the member's behalf. No monetary credit or cash equivalent will be issued.</li>
+        <li style={legalStyles.li}><strong>Expiration:</strong> Referral rewards expire three (3) months from the date the Referred Member joins PGN. Expired rewards are forfeited with no cash value.</li>
+        <li style={legalStyles.li}><strong>Non-Transferable:</strong> Referral rewards are personal to the earning member and may not be transferred or sold.</li>
+        <li style={legalStyles.li}><strong>Limit and Abuse:</strong> PGN reserves the right to limit, modify, or discontinue the Referral Program at any time and to disqualify referrals that appear fraudulent or in violation of these Terms.</li>
+      </ul>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>7. Member Directory and Network Usage</h2>
+      <p style={legalStyles.p}>Access to the PGN private member directory is a benefit extended in good faith to facilitate genuine professional networking. By accessing the directory, you agree to the following:</p>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}><strong>No Spam or Mass Solicitation:</strong> You may not use member contact information to send unsolicited bulk communications, mass marketing messages, or automated outreach of any kind.</li>
+        <li style={legalStyles.li}><strong>No Unauthorized Sharing:</strong> Member contact information and directory contents may not be shared with any person or organization outside of PGN without the express written consent of the individual member whose information is being shared.</li>
+        <li style={legalStyles.li}><strong>Professional Use Only:</strong> The directory is intended for one-on-one professional networking in the spirit of the PGN community. Misuse of directory access may result in immediate membership termination.</li>
+        <li style={legalStyles.li}><strong>No Data Harvesting:</strong> You may not copy, scrape, export, or compile member data for use in external databases, CRMs, or marketing platforms without explicit written consent from each affected member.</li>
+      </ul>
+      <p style={legalStyles.p}>PGN reserves the right to revoke directory access for any member found to be in violation of these provisions.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>8. Sponsorship Terms</h2>
+
+      <h3 style={legalStyles.h3}>8.1 Sponsorship Tiers</h3>
+      <div style={{overflowX:"auto",marginBottom:"20px"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:"13px"}}>
+          <thead>
+            <tr style={{background:"#0E2B1A",color:"white"}}>
+              <th style={{padding:"10px 14px",textAlign:"left",fontWeight:700,letterSpacing:"0.04em"}}>Tier</th>
+              <th style={{padding:"10px 14px",textAlign:"left",fontWeight:700,letterSpacing:"0.04em"}}>Rate</th>
+              <th style={{padding:"10px 14px",textAlign:"left",fontWeight:700,letterSpacing:"0.04em"}}>Key Benefits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ["Presenting Sponsor","$10,000/yr","PGN title naming rights, logo on all materials, 4 memberships, exclusive event rights, featured speaker slot"],
+              ["Season Sponsor","$5,000/yr","Logo on website/email/event materials, 2 memberships, speaking slot at Year-End event, social/email features"],
+              ["Event Sponsor","$2,500/event","Logo at specific event, branded tee marker and table, 1 complimentary player spot, social/email mention"],
+              ["Hole Sponsor","$500/event","Branded sign at 1 designated hole, name in event program"],
+            ].map(([tier,rate,benefits],i)=>(
+              <tr key={tier} style={{background:i%2===0?"#f9f7f4":"white",borderBottom:"1px solid #eee"}}>
+                <td style={{padding:"10px 14px",fontWeight:600,color:"#0E2B1A",whiteSpace:"nowrap"}}>{tier}</td>
+                <td style={{padding:"10px 14px",color:"#444",whiteSpace:"nowrap"}}>{rate}</td>
+                <td style={{padding:"10px 14px",color:"#444",lineHeight:"1.6"}}>{benefits}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style={legalStyles.h3}>8.2 Sponsorship Agreement</h3>
+      <p style={legalStyles.p}>All sponsorships are subject to a separate written confirmation of terms between the sponsor and PGN. These Terms of Service govern the general relationship; specific deliverables, placement, and performance terms will be outlined in the applicable sponsorship confirmation.</p>
+
+      <h3 style={legalStyles.h3}>8.3 No Auto-Renewal</h3>
+      <p style={legalStyles.p}>Sponsorships do not auto-renew. Each sponsorship is active for the duration explicitly specified. Sponsors wishing to continue must enter into a new agreement at the then-current rates.</p>
+
+      <h3 style={legalStyles.h3}>8.4 Refunds and Cancellation</h3>
+      <p style={legalStyles.p}>Sponsorship fees are non-refundable once the sponsorship period has commenced or materials have been produced. PGN reserves the right to make exceptions at its sole discretion.</p>
+
+      <h3 style={legalStyles.h3}>8.5 Sponsor Conduct</h3>
+      <p style={legalStyles.p}>Sponsors are expected to conduct themselves in a manner consistent with the professional standards of the PGN community. PGN reserves the right to terminate a sponsorship arrangement without refund if a sponsor's conduct, public statements, or brand associations are deemed inconsistent with PGN's values or reputation.</p>
+
+      <h3 style={legalStyles.h3}>8.6 No Endorsement</h3>
+      <p style={legalStyles.p}>Sponsorship of PGN events or programs does not constitute PGN's endorsement of the sponsor's products, services, or business practices. Sponsors may not represent themselves as endorsed or recommended by PGN beyond the scope agreed upon in writing.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>9. Membership Termination by PGN</h2>
+      <p style={legalStyles.p}>PGN reserves the right to suspend or terminate any membership at its sole discretion, including but not limited to: violation of these Terms, violation of the Code of Conduct, conduct harmful to PGN's reputation or members, misrepresentation during the application process, or non-payment of membership fees or event venue charges.</p>
+      <p style={legalStyles.p}>In the event of termination by PGN, no refund will be issued for any remaining membership period, regardless of tier. Immediate termination without prior notice may occur in cases involving serious misconduct or safety concerns.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>10. Code of Conduct</h2>
+      <p style={legalStyles.p}>PGN is a professional community built on respect, integrity, and genuine connection. All members, guests, and sponsors are expected to uphold the following standards at all PGN events and in all interactions with the PGN community:</p>
+
+      <h3 style={legalStyles.h3}>10.1 Dress Code</h3>
+      <p style={legalStyles.p}>Golf-appropriate attire is required at all on-course events. Business casual or better is expected at networking and off-course events. Host venues may have their own dress code requirements, which take precedence.</p>
+
+      <h3 style={legalStyles.h3}>10.2 Professional Conduct</h3>
+      <p style={legalStyles.p}>Members are expected to behave as professionals at all times, treating fellow members, event staff, course personnel, and sponsors with courtesy and respect. Discriminatory, harassing, or demeaning behavior of any kind will not be tolerated.</p>
+
+      <h3 style={legalStyles.h3}>10.3 Alcohol</h3>
+      <p style={legalStyles.p}>Moderate consumption of alcohol at PGN events is acceptable. Members are expected to drink responsibly, in a manner that does not impair their judgment, disrupt the event, or negatively impact the experience of other members.</p>
+
+      <h3 style={legalStyles.h3}>10.4 Language</h3>
+      <p style={legalStyles.p}>Members are expected to exercise reasonable judgment regarding language. Excessive, aggressive, or offensive language directed at other members, staff, or course personnel is not acceptable.</p>
+
+      <h3 style={legalStyles.h3}>10.5 Sportsmanship</h3>
+      <p style={legalStyles.p}>Members are expected to demonstrate good sportsmanship on the course at all times — honesty in scoring, respect for pace of play, care for the course, and adherence to the rules of golf and each host venue's policies.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>11. Assumption of Risk and Liability Waiver</h2>
+      <p style={{...legalStyles.p,fontWeight:600,color:"#0E2B1A"}}>BY PARTICIPATING IN ANY PGN EVENT, YOU ACKNOWLEDGE AND AGREE TO THE FOLLOWING:</p>
+
+      <h3 style={legalStyles.h3}>11.1 Assumption of Risk</h3>
+      <p style={legalStyles.p}>Golf and related physical activities involve inherent risks of injury, including but not limited to risks from errant golf balls, golf carts, uneven terrain, weather conditions, and physical exertion. You voluntarily assume all such risks associated with participation in PGN events.</p>
+
+      <h3 style={legalStyles.h3}>11.2 Release of Liability</h3>
+      <p style={legalStyles.p}>To the fullest extent permitted by applicable law, you release, discharge, and hold harmless Pittsburgh Golf Network, its organizers, employees, contractors, partners, and sponsors from any and all claims, damages, losses, costs, or liabilities arising out of or related to your participation in any PGN event, including claims arising from negligence. This release does not apply to claims arising from gross negligence or willful misconduct.</p>
+
+      <h3 style={legalStyles.h3}>11.3 Venue Responsibility</h3>
+      <p style={legalStyles.p}>PGN is not responsible for the condition, maintenance, or policies of any host venue. Claims arising from venue conditions, equipment, or staff should be directed to the host venue.</p>
+
+      <h3 style={legalStyles.h3}>11.4 Limitation of Liability</h3>
+      <p style={legalStyles.p}>In no event shall PGN's total liability to you for any claim arising from these Terms or your membership exceed the total amount paid by you to PGN in the three (3) months preceding the event giving rise to such claim. PGN shall not be liable for any indirect, incidental, special, or consequential damages.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>12. Intellectual Property</h2>
+      <p style={legalStyles.p}>All content produced or published by PGN — including the PGN name, logo, course spotlights, editorial content, event materials, social media content, photography, and member-facing communications — is the exclusive intellectual property of Pittsburgh Golf Network. Unauthorized reproduction, distribution, or use may result in membership termination and/or legal action.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>13. Privacy</h2>
+      <p style={legalStyles.p}>PGN's collection and use of your personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference and available at pittsburghgolfnetwork.com. By becoming a member, you consent to the practices described in the Privacy Policy.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>14. Dispute Resolution</h2>
+
+      <h3 style={legalStyles.h3}>14.1 Informal Resolution</h3>
+      <p style={legalStyles.p}>Before initiating any formal dispute process, you agree to first contact PGN in good faith at <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a> and allow PGN a reasonable opportunity (no less than 30 days) to resolve the issue informally.</p>
+
+      <h3 style={legalStyles.h3}>14.2 Mediation</h3>
+      <p style={legalStyles.p}>If informal resolution is unsuccessful, the parties agree to submit the dispute to non-binding mediation administered by a mutually agreed-upon mediator in Allegheny County, Pennsylvania, prior to initiating arbitration or litigation.</p>
+
+      <h3 style={legalStyles.h3}>14.3 Binding Arbitration</h3>
+      <p style={legalStyles.p}>If mediation does not resolve the dispute, the parties agree to resolve it through binding arbitration in Allegheny County, Pennsylvania, in accordance with the rules of the American Arbitration Association (AAA). The arbitrator's decision will be final and binding. Each party shall bear its own costs unless the arbitrator determines otherwise.</p>
+
+      <h3 style={legalStyles.h3}>14.4 Exceptions</h3>
+      <p style={legalStyles.p}>Nothing in this Section prevents either party from seeking emergency injunctive relief in a court of competent jurisdiction to prevent irreparable harm, including claims involving intellectual property infringement.</p>
+
+      <h3 style={legalStyles.h3}>14.5 Class Action Waiver</h3>
+      <p style={legalStyles.p}>All disputes must be brought in an individual capacity. You agree to waive any right to bring or participate in any class action, collective action, or representative proceeding.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>15. Governing Law and Jurisdiction</h2>
+      <p style={legalStyles.p}>These Terms shall be governed by and construed in accordance with the laws of the Commonwealth of Pennsylvania, without regard to its conflict of law provisions. To the extent any dispute is not subject to arbitration, the parties consent to the exclusive jurisdiction of the state and federal courts located in Allegheny County, Pennsylvania.</p>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>16. General Provisions</h2>
+      <ul style={{marginBottom:"14px"}}>
+        <li style={legalStyles.li}><strong>Entire Agreement:</strong> These Terms, together with the Privacy Policy and any sponsorship confirmations, constitute the entire agreement between you and PGN.</li>
+        <li style={legalStyles.li}><strong>Severability:</strong> If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.</li>
+        <li style={legalStyles.li}><strong>Waiver:</strong> PGN's failure to enforce any provision shall not constitute a waiver of its right to enforce such provision in the future.</li>
+        <li style={legalStyles.li}><strong>Assignment:</strong> You may not assign or transfer your membership or any rights under these Terms without PGN's prior written consent.</li>
+        <li style={legalStyles.li}><strong>Notices:</strong> All notices to PGN should be sent to golf@pittsburghgolfnetwork.com. Notices to members will be sent to the email address on file.</li>
+        <li style={legalStyles.li}><strong>Updates to Terms:</strong> Material changes will be communicated via email with at least 14 days' notice. Continued use of PGN services after the effective date constitutes acceptance.</li>
+      </ul>
+      <div style={legalStyles.divider}/>
+
+      <h2 style={legalStyles.h2}>17. Contact Information</h2>
+      <p style={legalStyles.p}><strong>Pittsburgh Golf Network</strong> &nbsp;&middot;&nbsp; Pittsburgh, Pennsylvania<br/><a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a></p>
+      <p style={{...legalStyles.p,marginTop:"40px",fontSize:"12px",color:"#aaa"}}>© 2026 Pittsburgh Golf Network. All rights reserved.</p>
+    </div>
+  );
+}
+function PrivacyContent(){
+  return(
+    <div>
+      <h1 style={legalStyles.h1}>Privacy Policy</h1>
+      <p style={legalStyles.eff}>Effective Date: April 7, 2026 &nbsp;·&nbsp; Last Updated: April 7, 2026</p>
+      <div style={legalStyles.divider}/>
+      <p style={legalStyles.p}>This privacy notice for Pittsburgh Golf Network ("Company," "we," "us," or "our") describes how and why we might collect, store, use, and/or share ("process") your information when you use our services, such as when you visit pittsburghgolfnetwork.com or engage with us in other related ways including sales, marketing, or events.</p>
+      <p style={legalStyles.p}><strong>Questions or concerns?</strong> Contact us at <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a>.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>1. What Information Do We Collect?</h2>
+      <p style={legalStyles.p}><strong>Information you provide:</strong> We collect personal information you voluntarily provide, including names, phone numbers, and email addresses when you express interest in our services, apply for membership, or contact us.</p>
+      <p style={legalStyles.p}><strong>Information automatically collected:</strong> When you visit our site, we automatically collect certain information including IP address, browser and device characteristics, operating system, language preferences, and usage data. We also collect information through cookies and similar technologies.</p>
+      <p style={legalStyles.p}><strong>Information from other sources:</strong> We may obtain information from public databases, marketing partners, and other third parties to enhance our marketing and keep our records current.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>2. How Do We Process Your Information?</h2>
+      <p style={legalStyles.p}>We process your information to provide, improve, and administer our services, communicate with you, prevent fraud, and comply with law. We only process your information when we have a valid legal reason to do so.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>3. When and With Whom Do We Share Your Information?</h2>
+      <p style={legalStyles.p}>We may share your information with third-party vendors and service providers who perform services on our behalf (ad networks, analytics, payment processors, communication tools). We may also share in connection with business transfers, with affiliates, or with business partners. We have contracts with all third parties designed to safeguard your information.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>4. Cookies and Tracking Technologies</h2>
+      <p style={legalStyles.p}>We may use cookies and similar tracking technologies to collect and store information. You can set your browser to refuse cookies, though this may affect certain features of our services.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>5. How Long Do We Keep Your Information?</h2>
+      <p style={legalStyles.p}>We keep your personal information for as long as necessary to fulfill the purposes outlined in this policy unless a longer retention period is required by law. When we no longer need your information, we delete or anonymize it.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>6. How Do We Keep Your Information Safe?</h2>
+      <p style={legalStyles.p}>We have implemented appropriate technical and organizational security measures to protect your personal information. However, no electronic transmission over the internet can be guaranteed 100% secure. Transmission of personal information to and from our services is at your own risk.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>7. Do We Collect Information from Minors?</h2>
+      <p style={legalStyles.p}>We do not knowingly collect data from or market to children under 18. If you become aware of any data we may have collected from children under 18, contact us at golf@pittsburghgolfnetwork.com.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>8. Your Privacy Rights</h2>
+      <p style={legalStyles.p}>Depending on your location, you may have rights to access, correct, delete, or port your personal information. You may also have the right to opt out of marketing communications at any time by clicking "unsubscribe" in our emails or contacting us directly.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>9. California Residents (CCPA)</h2>
+      <p style={legalStyles.p}>California residents have specific rights including the right to know what personal information we collect, the right to delete personal information, and the right to non-discrimination for exercising privacy rights. Pittsburgh Golf Network has not sold any personal information to third parties in the preceding 12 months. To exercise your rights, contact us at golf@pittsburghgolfnetwork.com or visit pittsburghgolfnetwork.com/#contact.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>10. Virginia Residents (CDPA)</h2>
+      <p style={legalStyles.p}>Virginia residents have rights to access, correct, delete, and obtain a copy of their personal data, and to opt out of targeted advertising or profiling. Pittsburgh Golf Network has not sold any personal data to third parties. To exercise your rights, email golf@pittsburghgolfnetwork.com. Appeals may be submitted within 60 days of our decision.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>11. Do-Not-Track Features</h2>
+      <p style={legalStyles.p}>We do not currently respond to DNT browser signals or other mechanisms that communicate your choice not to be tracked online, as no uniform standard has been finalized.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>12. Updates to This Notice</h2>
+      <p style={legalStyles.p}>We may update this privacy notice from time to time. The updated version will be effective as soon as it is accessible. We encourage you to review this notice frequently.</p>
+      <div style={legalStyles.divider}/>
+      <h2 style={legalStyles.h2}>13. Contact Us</h2>
+      <p style={legalStyles.p}><strong>Pittsburgh Golf Network</strong> · Pittsburgh, Pennsylvania · <a href="mailto:golf@pittsburghgolfnetwork.com" style={{color:"#9A7A32"}}>golf@pittsburghgolfnetwork.com</a></p>
+      <p style={{...legalStyles.p,marginTop:"8px"}}>To review, update, or delete your data: <a href="/#contact" style={{color:"#9A7A32"}}>pittsburghgolfnetwork.com/#contact</a></p>
+      <p style={{...legalStyles.p,marginTop:"40px",fontSize:"12px",color:"#aaa"}}>© 2026 Pittsburgh Golf Network. All rights reserved.</p>
+    </div>
+  );
+}
+
+
+function App(){
+  const[scrolled,setScrolled]=useState(false);
+
+  useEffect(()=>{
+    const tag=document.createElement("style");
+    tag.textContent=CSS;
+    document.head.appendChild(tag);
+    return()=>document.head.removeChild(tag);
+  },[]);
+
+  useEffect(()=>{
+    const h=()=>setScrolled(window.scrollY>20);
+    window.addEventListener("scroll",h,{passive:true});
+    return()=>window.removeEventListener("scroll",h);
+  },[]);
+
+  useEffect(()=>{
+    const h=e=>{
+      const a=e.target.closest("a[href^='#']");
+      if(!a)return;
+      const t=document.querySelector(a.getAttribute("href"));
+      if(t){e.preventDefault();t.scrollIntoView({behavior:"smooth"});}
+    };
+    document.addEventListener("click",h);
+    return()=>document.removeEventListener("click",h);
+  },[]);
+
+  return(
+    <>
+      <IconDefs/>
+      <Nav scrolled={scrolled}/>
+      <Hero/>
+      <ValueSection/>
+      <PricingSection/>
+      <ROISection/>
+      <CoursesSection/>
+      <CalendarSection/>
+      <AboutSection/>
+      <SponsorsSection/>
+      <PartnersSection/>
+      <BlogSection/>
+      <ContactSection/>
+      <Footer/>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+setTimeout(()=>{const r=document.getElementById('root');if(r)r.style.opacity='1';},100);
+  </script>
+</body>
+</html>
