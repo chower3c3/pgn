@@ -342,6 +342,7 @@ const CSS = `
     .ft{flex-direction:column;gap:32px;}
     .fbot{flex-direction:column;}
     .sp-g{grid-template-columns:repeat(2,1fr);}
+    .cc{min-width:100%;}
     .cal-cell{min-height:56px;}
     .cal-dot{display:none;}
   }
@@ -597,7 +598,8 @@ function CoursesSection(){
   useEffect(()=>{
     const t=trackRef.current;if(!t)return;
     const c=t.querySelector(".cc");if(!c)return;
-    t.style.transform=`translateX(-${idx*(c.offsetWidth+20)}px)`;
+    const gap=window.innerWidth>960?20:20;
+    t.style.transform=`translateX(-${idx*(c.offsetWidth+gap)}px)`;
   },[idx]);
   return(
     <section className="courses-s" id="courses">
