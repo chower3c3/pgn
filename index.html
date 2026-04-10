@@ -838,8 +838,42 @@ function BlogSection(){
 
 function ContactSection(){
   const[sent,setSent]=useState(false);
+  const[error,setError]=useState(false);
+  const[loading,setLoading]=useState(false);
+  const firstRef=useRef(null),lastRef=useRef(null),emailRef=useRef(null),companyRef=useRef(null),interestRef=useRef(null),messageRef=useRef(null);
   const rH=useReveal(),rG=useReveal();
-  const handleSubmit=e=>{e.preventDefault();setSent(true);setTimeout(()=>setSent(false),4000);};
+
+  const GHL_WEBHOOK="https://services.leadconnectorhq.com/hooks/o3gJLGbebcAizoBE8JHb/webhook-trigger/8999b5de-1b8f-4cbd-b013-5ba743787298";
+
+  const handleSubmit=async e=>{
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+    const payload={
+      firstName:firstRef.current.value,
+      lastName:lastRef.current.value,
+      email:emailRef.current.value,
+      companyAndTitle:companyRef.current.value,
+      interest:interestRef.current.value,
+      message:messageRef.current.value,
+      source:"pittsburghgolfnetwork.com contact form",
+    };
+    try{
+      await fetch(GHL_WEBHOOK,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload),
+      });
+      setSent(true);
+      e.target.reset();
+      setTimeout(()=>setSent(false),5000);
+    }catch(err){
+      setError(true);
+    }finally{
+      setLoading(false);
+    }
+  };
+
   return(
     <section className="contact-s" id="contact">
       <div className="sw">
@@ -859,17 +893,18 @@ function ContactSection(){
           </div>
           <form className="cform" onSubmit={handleSubmit}>
             <div className="frow">
-              <div className="fg"><label>First Name</label><input type="text" placeholder="John"/></div>
-              <div className="fg"><label>Last Name</label><input type="text" placeholder="Smith"/></div>
+              <div className="fg"><label>First Name</label><input type="text" placeholder="John" ref={firstRef} required/></div>
+              <div className="fg"><label>Last Name</label><input type="text" placeholder="Smith" ref={lastRef} required/></div>
             </div>
-            <div className="fg"><label>Email</label><input type="email" placeholder="john@company.com"/></div>
-            <div className="fg"><label>Company and Title</label><input type="text" placeholder="CEO, Smith Ventures"/></div>
+            <div className="fg"><label>Email</label><input type="email" placeholder="john@company.com" ref={emailRef} required/></div>
+            <div className="fg"><label>Company and Title</label><input type="text" placeholder="CEO, Smith Ventures" ref={companyRef}/></div>
             <div className="fg">
               <label>I'm Interested In</label>
-              <select defaultValue=""><option value="" disabled>Select one</option><option>Membership Inquiry</option><option>Corporate Sponsorship</option><option>General Question</option><option>Media and Press</option></select>
+              <select defaultValue="" ref={interestRef}><option value="" disabled>Select one</option><option>Membership Inquiry</option><option>Corporate Sponsorship</option><option>General Question</option><option>Media and Press</option></select>
             </div>
-            <div className="fg"><label>Message</label><textarea rows={4} placeholder="Tell us a little about yourself and what you are looking for..."/></div>
-            <button type="submit" className="btn-sub" style={sent?{background:"var(--green-accent)"}:{}}>{sent?"Message Sent":"Send Message"}</button>
+            <div className="fg"><label>Message</label><textarea rows={4} placeholder="Tell us a little about yourself and what you are looking for..." ref={messageRef}/></div>
+            {error&&<p style={{fontSize:"13px",color:"#c0392b",fontWeight:400}}>Something went wrong. Please try again or email us directly.</p>}
+            <button type="submit" className="btn-sub" disabled={loading} style={sent?{background:"var(--green-accent)"}:{}}>{loading?"Sending...":sent?"Message Sent ✓":"Send Message"}</button>
           </form>
         </div>
       </div>
