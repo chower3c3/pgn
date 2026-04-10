@@ -342,7 +342,10 @@ const CSS = `
     .ft{flex-direction:column;gap:32px;}
     .fbot{flex-direction:column;}
     .sp-g{grid-template-columns:repeat(2,1fr);}
-    .cc{min-width:100%;}
+    .car-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scroll-behavior:smooth;}
+    .car-track{transform:none!important;transition:none;}
+    .cc{min-width:calc(100vw - 64px);scroll-snap-align:start;}
+    .car-nav{display:none;}
     .cal-cell{min-height:56px;}
     .cal-dot{display:none;}
   }
