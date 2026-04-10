@@ -595,24 +595,46 @@ function CoursesSection(){
   const outerRef=useRef(null);
   const rH=useReveal(),rC=useReveal();
   const isMobile=()=>window.innerWidth<=960;
+
+  // Keep idx in sync when user swipes manually
+  useEffect(()=>{
+    const outer=outerRef.current;if(!outer)return;
+    const onScroll=()=>{
+      const c=outer.querySelector(".cc");if(!c)return;
+      const cardW=c.offsetWidth+20;
+      const newIdx=Math.round(outer.scrollLeft/cardW);
+      setIdx(newIdx);
+    };
+    outer.addEventListener("scroll",onScroll,{passive:true});
+    return()=>outer.removeEventListener("scroll",onScroll);
+  },[]);
+
   const move=dir=>{
     if(isMobile()){
       const outer=outerRef.current;if(!outer)return;
       const c=outer.querySelector(".cc");if(!c)return;
-      const newIdx=Math.max(0,Math.min(COURSES.length-1,idx+dir));
-      setIdx(newIdx);
-      outer.scrollTo({left:newIdx*(c.offsetWidth+20),behavior:"smooth"});
+      const cardW=c.offsetWidth+20;
+      const newIdx=Math.max(0,Math.min(COURSES.length-1,Math.round(outer.scrollLeft/cardW)+dir));
+      outer.scrollTo({left:newIdx*cardW,behavior:"smooth"});
     } else {
       const vis=3;
-      setIdx(i=>Math.max(0,Math.min(COURSES.length-vis,i+dir)));
+      setIdx(i=>{
+        const next=Math.max(0,Math.min(COURSES.length-vis,i+dir));
+        const t=trackRef.current;if(!t)return next;
+        const c=t.querySelector(".cc");if(!c)return next;
+        t.style.transform=`translateX(-${next*(c.offsetWidth+20)}px)`;
+        return next;
+      });
     }
   };
+
   useEffect(()=>{
     if(isMobile())return;
     const t=trackRef.current;if(!t)return;
     const c=t.querySelector(".cc");if(!c)return;
     t.style.transform=`translateX(-${idx*(c.offsetWidth+20)}px)`;
   },[idx]);
+
   return(
     <section className="courses-s" id="courses">
       <div className="sw">
@@ -629,10 +651,10 @@ function CoursesSection(){
               </div>
             ))}
           </div>
-          <div className="car-nav">
-            <button className="car-btn" onClick={()=>move(-1)}>&#8249;</button>
-            <button className="car-btn" onClick={()=>move(1)}>&#8250;</button>
-          </div>
+        </div>
+        <div className="car-nav">
+          <button className="car-btn" onClick={()=>move(-1)}>&#8249;</button>
+          <button className="car-btn" onClick={()=>move(1)}>&#8250;</button>
         </div>
       </div>
     </section>
