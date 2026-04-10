@@ -343,9 +343,8 @@ const CSS = `
     .fbot{flex-direction:column;}
     .sp-g{grid-template-columns:repeat(2,1fr);}
     .car-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;scroll-behavior:smooth;}
-    .car-track{transform:none!important;transition:none;}
-    .cc{min-width:calc(100vw - 64px);scroll-snap-align:start;}
-    .car-nav{display:none;}
+    .car-track{transform:none!important;transition:none;padding:0;}
+    .cc{min-width:calc(100vw - 48px);max-width:calc(100vw - 48px);scroll-snap-align:start;}
     .cal-cell{min-height:56px;}
     .cal-dot{display:none;}
   }
@@ -593,22 +592,32 @@ function ROISection(){
 function CoursesSection(){
   const[idx,setIdx]=useState(0);
   const trackRef=useRef(null);
+  const outerRef=useRef(null);
   const rH=useReveal(),rC=useReveal();
+  const isMobile=()=>window.innerWidth<=960;
   const move=dir=>{
-    const vis=window.innerWidth>960?3:1;
-    setIdx(i=>Math.max(0,Math.min(COURSES.length-vis,i+dir)));
+    if(isMobile()){
+      const outer=outerRef.current;if(!outer)return;
+      const c=outer.querySelector(".cc");if(!c)return;
+      const newIdx=Math.max(0,Math.min(COURSES.length-1,idx+dir));
+      setIdx(newIdx);
+      outer.scrollTo({left:newIdx*(c.offsetWidth+20),behavior:"smooth"});
+    } else {
+      const vis=3;
+      setIdx(i=>Math.max(0,Math.min(COURSES.length-vis,i+dir)));
+    }
   };
   useEffect(()=>{
+    if(isMobile())return;
     const t=trackRef.current;if(!t)return;
     const c=t.querySelector(".cc");if(!c)return;
-    const gap=window.innerWidth>960?20:20;
-    t.style.transform=`translateX(-${idx*(c.offsetWidth+gap)}px)`;
+    t.style.transform=`translateX(-${idx*(c.offsetWidth+20)}px)`;
   },[idx]);
   return(
     <section className="courses-s" id="courses">
       <div className="sw">
         <div className="sh reveal" ref={rH}><div className="eyebrow">Featured Courses</div><h2 className="st">Pittsburgh's Premier Fairways</h2><p className="ss">PGN members play some of the finest courses the greater Pittsburgh area has to offer.</p></div>
-        <div className="car-outer reveal" ref={rC}>
+        <div className="car-outer reveal" ref={el=>{rC.current=el;outerRef.current=el;}}>
           <div className="car-track" ref={trackRef}>
             {COURSES.map(c=>(
               <div className="cc" key={c.name}>
