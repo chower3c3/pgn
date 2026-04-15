@@ -50,6 +50,14 @@ module.exports = async function handler(req, res) {
       if (!r.ok) return null;
       const data = await r.json();
       const c = data.contact || data;
+      console.log('Contact fields:', JSON.stringify({
+        jobTitle: c.jobTitle,
+        job_title: c.job_title,
+        companyName: c.companyName,
+        company: c.company,
+        businessName: c.businessName,
+        customField: c.customField
+      }));
 
       // Skip admin email
       if (c.email?.toLowerCase() === process.env.ADMIN_EMAIL?.toLowerCase()) return null;
@@ -60,8 +68,8 @@ module.exports = async function handler(req, res) {
         lastName: c.lastName || '',
         phone: c.phone || '',
         email: c.email || '',
-        jobTitle: c.jobTitle || c.customField?.job_title || '',
-        company: c.companyName || c.company || '',
+        jobTitle: c.jobTitle || c.job_title || c.customField?.job_title || '',
+        company: c.companyName || c.company || c.businessName || '',
       };
     } catch {
       return null;
