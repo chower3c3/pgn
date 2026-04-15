@@ -18,6 +18,7 @@ module.exports = async function handler(req, res) {
   const headers = {
     Authorization: `Bearer ${process.env.GHL_API_KEY}`,
     'Content-Type': 'application/json',
+    'Version': '2021-07-28',
   };
 
   const subRes = await fetch(
