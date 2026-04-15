@@ -34,7 +34,7 @@ module.exports = async function handler(req, res) {
     console.log('GHL subscriptions response:', rawText);
     const subData = rawText ? JSON.parse(rawText) : {};
     const subs = subData.data || subData.subscriptions || subData.list || [];
-    const filtered = subs.filter(s => s.status === 'active' || s.status === 'trialing');
+    const filtered = subs.filter(s => (s.status === 'active' || s.status === 'trialing') && s.liveMode === true);
     allSubscriptions = [...allSubscriptions, ...filtered];
     hasMore = subs.length === 100;
     page++;
