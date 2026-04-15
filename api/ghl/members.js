@@ -25,12 +25,13 @@ module.exports = async function handler(req, res) {
 
   while (hasMore) {
     const subRes = await fetch(
-      `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&status=active&limit=100&page=${page}`,
+      `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&limit=100&page=${page}`,
       { headers }
     );
     const subData = await subRes.json();
     const subs = subData.subscriptions || subData.list || [];
-    allSubscriptions = [...allSubscriptions, ...subs];
+    const filtered = subs.filter(s => s.status === 'active' || s.status === 'trialing');
+    allSubscriptions = [...allSubscriptions, ...filtered];
     hasMore = subs.length === 100;
     page++;
   }
