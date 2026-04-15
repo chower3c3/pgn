@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
   };
 
   const subRes = await fetch(
-    `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&contactId=${contactId}`,
+    `${GHL_BASE}/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contactId}`,
     { headers }
   );
   const subData = await subRes.json();
