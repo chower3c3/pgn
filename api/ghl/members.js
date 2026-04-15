@@ -16,6 +16,7 @@ module.exports = async function handler(req, res) {
   const headers = {
     Authorization: `Bearer ${process.env.GHL_API_KEY}`,
     'Content-Type': 'application/json',
+    'Version': '2021-07-28',
   };
 
   // Fetch all active subscriptions
@@ -25,7 +26,7 @@ module.exports = async function handler(req, res) {
 
   while (hasMore) {
     const subRes = await fetch(
-      `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&limit=100&page=${page}`,
+      `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&limit=100&startAfter=${page > 1 ? (page-1)*100 : ''}`,
       { headers }
     );
     const subData = await subRes.json();
