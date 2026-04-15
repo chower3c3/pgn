@@ -15,7 +15,7 @@ const supabase = createClient(
 async function checkGHLActiveStatus(email) {
   // Search contacts by email in GHL
   const contactRes = await fetch(
-    `https://rest.gohighlevel.com/v1/contacts/search?email=${encodeURIComponent(email)}`,
+    `https://services.leadconnectorhq.com/contacts/?locationId=${process.env.GHL_LOCATION_ID}&email=${encodeURIComponent(email)}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GHL_API_KEY}`,
@@ -32,7 +32,7 @@ async function checkGHLActiveStatus(email) {
 
   // Check subscriptions for this contact
   const subRes = await fetch(
-    `https://rest.gohighlevel.com/v1/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&contactId=${contact.id}`,
+    `https://services.leadconnectorhq.com/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contact.id}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GHL_API_KEY}`,
