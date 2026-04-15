@@ -32,7 +32,7 @@ async function checkGHLActiveStatus(email) {
 
   // Check subscriptions for this contact
   const subRes = await fetch(
-    `https://services.leadconnectorhq.com/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contact.id}`,
+    `https://services.leadconnectorhq.com/payments/subscriptions?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contact.id}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GHL_API_KEY}`,
