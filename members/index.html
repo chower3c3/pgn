@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Member Portal | Pittsburgh Golf Network</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="icon" type="image/png" href="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Libre+Baskerville:ital,wght@1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold:#C9A84C;--gold-light:#E2C06A;--gold-dim:#9A7A32;--gold-pale:#FAF3E0;
+      --green:#0E2B1A;--green-mid:#1A4A2A;--green-accent:#2A6640;--green-pale:#EBF2EC;
+      --off-white:#F8F7F4;--cream:#F3EFE6;--white:#FFFFFF;
+      --text:#141414;--text-mid:#444;--text-light:#888;
+      --border:rgba(0,0,0,0.08);--border-gold:rgba(201,168,76,0.2);
+      --shadow-sm:0 2px 16px rgba(0,0,0,0.07);
+      --shadow-md:0 8px 40px rgba(0,0,0,0.11);
+      --shadow-lg:0 20px 80px rgba(0,0,0,0.15);
+      --radius:8px;--radius-sm:4px;
+      --sidebar-w:240px;
+      --nav-h:64px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Montserrat',sans-serif;background:var(--off-white);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;cursor:pointer;}
+    input,textarea,select{font-family:inherit;}
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px;}
+
+    /* ── AUTH SCREENS ── */
+    .auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(170deg,var(--green) 0%,#122A1C 100%);padding:24px;position:relative;overflow:hidden;}
+    .auth-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 85% 20%,rgba(201,168,76,0.06) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 10% 80%,rgba(42,102,64,0.3) 0%,transparent 55%);pointer-events:none;}
+    .auth-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+    .auth-card{position:relative;z-index:1;background:rgba(255,255,255,0.97);border-radius:12px;padding:48px 44px;width:100%;max-width:440px;box-shadow:0 24px 80px rgba(0,0,0,0.35);}
+    .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px;justify-content:center;}
+    .auth-logo img{width:44px;height:44px;object-fit:contain;}
+    .auth-logo-text{display:flex;flex-direction:column;gap:2px;}
+    .auth-logo-primary{font-size:13px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--green);}
+    .auth-logo-sub{font-size:7.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);}
+    .auth-title{font-size:22px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:6px;}
+    .auth-sub{font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;margin-bottom:28px;}
+    .auth-sub em{font-family:'Libre Baskerville',serif;font-style:italic;color:var(--gold-dim);}
+    .form-group{margin-bottom:18px;}
+    .form-label{display:block;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:7px;}
+    .form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);background:var(--off-white);transition:border-color 0.2s,box-shadow 0.2s;outline:none;}
+    .form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12);}
+    .form-input.error{border-color:#e05c5c;}
+    .btn-primary{width:100%;padding:13px;background:var(--gold);color:white;border:none;border-radius:var(--radius-sm);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;transition:all 0.22s;margin-top:4px;}
+    .btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+    .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+    .auth-link{text-align:center;margin-top:18px;font-size:12px;color:var(--text-light);}
+    .auth-link a{color:var(--gold-dim);font-weight:600;cursor:pointer;}
+    .auth-link a:hover{color:var(--gold);}
+    .auth-error{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;color:#b91c1c;margin-bottom:16px;line-height:1.5;}
+    .auth-success{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:10px 14px;font-size:12.5px;color:#166534;margin-bottom:16px;line-height:1.5;}
+    .auth-divider{height:1px;background:var(--border);margin:24px 0;}
+    .auth-back-link{display:block;text-align:center;margin-top:24px;font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;cursor:pointer;}
+    .auth-back-link:hover{color:var(--gold-light);}
+
+    /* ── PORTAL LAYOUT ── */
+    .portal-wrap{display:none;min-height:100vh;background:var(--off-white);}
+    .portal-wrap.visible{display:flex;flex-direction:column;}
+
+    /* Top nav */
+    .portal-nav{height:var(--nav-h);background:white;border-bottom:1px solid var(--border-gold);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow-sm);}
+    .portal-nav-logo{display:flex;align-items:center;gap:10px;}
+    .portal-nav-logo img{width:32px;height:32px;object-fit:contain;}
+    .portal-nav-logo-text{display:flex;flex-direction:column;gap:1px;}
+    .portal-nav-logo-primary{font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--green);}
+    .portal-nav-logo-sub{font-size:6.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);}
+    .portal-nav-right{display:flex;align-items:center;gap:16px;}
+    .portal-nav-user{font-size:11px;color:var(--text-mid);font-weight:600;}
+    .portal-nav-user span{color:var(--green);}
+    .btn-logout{font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:7px 14px;border:1.5px solid rgba(14,43,26,0.25);border-radius:var(--radius-sm);color:var(--green);background:transparent;transition:all 0.2s;}
+    .btn-logout:hover{background:var(--green);color:white;border-color:var(--green);}
+    .portal-nav-hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;padding:6px;cursor:pointer;}
+    .portal-nav-hamburger span{display:block;width:20px;height:2px;background:var(--text);border-radius:1px;transition:all 0.25s;}
+    .portal-nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+    .portal-nav-hamburger.open span:nth-child(2){opacity:0;}
+    .portal-nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+    /* Main content area */
+    .portal-body{display:flex;flex:1;min-height:calc(100vh - var(--nav-h));}
+
+    /* Sidebar */
+    .portal-sidebar{width:var(--sidebar-w);background:var(--green);flex-shrink:0;padding:28px 0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;transition:transform 0.3s;}
+    .sidebar-section-label{font-size:8.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(201,168,76,0.5);padding:0 20px;margin-bottom:8px;margin-top:20px;}
+    .sidebar-section-label:first-child{margin-top:0;}
+    .sidebar-nav-item{display:flex;align-items:center;gap:11px;padding:11px 20px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.2s;border-left:2px solid transparent;}
+    .sidebar-nav-item:hover{color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.06);}
+    .sidebar-nav-item.active{color:var(--gold-light);background:rgba(201,168,76,0.1);border-left-color:var(--gold);}
+    .sidebar-nav-item svg{width:16px;height:16px;flex-shrink:0;fill:currentColor;opacity:0.8;}
+    .sidebar-badge{font-size:9px;font-weight:700;background:var(--gold);color:white;border-radius:10px;padding:1px 6px;margin-left:auto;}
+
+    /* Content area */
+    .portal-content{flex:1;padding:32px;overflow-y:auto;max-width:1100px;}
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+    .panel-header{margin-bottom:28px;}
+    .panel-eyebrow{font-size:9px;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+    .panel-eyebrow::before{content:'';display:block;width:16px;height:1px;background:var(--gold-dim);}
+    .panel-title{font-size:clamp(20px,3vw,30px);font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:-0.02em;line-height:1.1;}
+    .panel-sub{font-size:13.5px;color:var(--text-mid);font-weight:300;line-height:1.7;margin-top:8px;}
+
+    /* Cards */
+    .card{background:white;border:1px solid var(--border-gold);border-radius:var(--radius);padding:24px 28px;box-shadow:var(--shadow-sm);}
+    .card+.card{margin-top:20px;}
+    .card-title{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .card-title-row .card-title{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+
+    /* Profile fields */
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .profile-field{display:flex;flex-direction:column;gap:5px;}
+    .profile-field.full{grid-column:1/-1;}
+    .profile-field-label{font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);}
+    .profile-field-value{font-size:13.5px;color:var(--text);line-height:1.5;}
+    .profile-field-value.empty{color:var(--text-light);font-style:italic;}
+    .profile-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13.5px;color:var(--text);background:var(--off-white);transition:border-color 0.2s;outline:none;resize:vertical;}
+    .profile-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.1);}
+    .profile-textarea{min-height:80px;}
+    .profile-actions{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+    .btn-save{font-size:10px;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;padding:10px 22px;background:var(--gold);color:white;border:none;border-radius:var(--radius-sm);transition:all 0.2s;}
+    .btn-save:hover{background:var(--gold-light);}
+    .btn-save:disabled{opacity:0.6;cursor:not-allowed;}
+    .btn-cancel{font-size:10px;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;padding:10px 22px;background:transparent;color:var(--text-mid);border:1.5px solid var(--border);border-radius:var(--radius-sm);transition:all 0.2s;}
+    .btn-cancel:hover{border-color:var(--text-mid);}
+    .edit-toggle{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border:1.5px solid var(--gold-dim);border-radius:var(--radius-sm);color:var(--gold-dim);background:transparent;cursor:pointer;transition:all 0.2s;}
+    .edit-toggle:hover{background:var(--gold);color:white;border-color:var(--gold);}
+    .save-msg{font-size:12px;color:#166534;font-weight:600;display:none;margin-top:8px;}
+    .save-msg.visible{display:block;}
+
+    /* Subscription card */
+    .sub-card{background:linear-gradient(135deg,var(--green) 0%,#1C3D2A 100%);border-radius:var(--radius);padding:24px 28px;border:1px solid rgba(201,168,76,0.2);color:white;margin-bottom:20px;position:relative;overflow:hidden;}
+    .sub-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none;}
+    .sub-badge{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+    .sub-type{font-size:20px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:-0.01em;margin-bottom:4px;}
+    .sub-detail{font-size:12.5px;color:rgba(255,255,255,0.55);font-weight:300;margin-bottom:14px;}
+    .sub-contact{font-size:11.5px;color:rgba(255,255,255,0.45);line-height:1.6;}
+    .sub-contact a{color:var(--gold-light);}
+
+    /* Member directory */
+    .search-bar{position:relative;margin-bottom:20px;}
+    .search-bar input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:white;outline:none;transition:border-color 0.2s;}
+    .search-bar input:focus{border-color:var(--gold);}
+    .search-bar svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;fill:var(--text-light);}
+    .members-table{width:100%;border-collapse:collapse;}
+    .members-table th{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-light);padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--border);}
+    .members-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+    .members-table tr:last-child td{border-bottom:none;}
+    .members-table tr:hover td{background:var(--gold-pale);}
+    .member-name{font-weight:600;color:var(--green);}
+    .member-initials{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green) 0%,var(--green-accent) 100%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold-light);flex-shrink:0;}
+    .member-name-cell{display:flex;align-items:center;gap:10px;}
+    .members-count{font-size:11.5px;color:var(--text-light);margin-bottom:12px;}
+
+    /* Events */
+    .events-list{display:flex;flex-direction:column;gap:16px;}
+    .event-card{background:white;border:1px solid var(--border-gold);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm);display:flex;gap:20px;align-items:flex-start;transition:all 0.2s;}
+    .event-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+    .event-date-block{flex-shrink:0;width:56px;height:60px;background:linear-gradient(135deg,var(--green) 0%,var(--green-accent) 100%);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;}
+    .event-date-month{font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);}
+    .event-date-day{font-size:26px;font-weight:900;line-height:1;letter-spacing:-0.02em;}
+    .event-info{flex:1;}
+    .event-title{font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;}
+    .event-meta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px;}
+    .event-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-light);}
+    .event-meta-item svg{width:12px;height:12px;fill:var(--text-light);}
+    .event-desc{font-size:13px;color:var(--text-mid);line-height:1.7;font-weight:300;}
+    .event-restricted-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:var(--green-pale);color:var(--green-accent);border:1px solid rgba(42,102,64,0.2);border-radius:20px;padding:3px 9px;margin-top:8px;}
+    .event-admin-actions{display:flex;gap:8px;margin-top:12px;}
+    .btn-sm{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;border-radius:var(--radius-sm);border:1.5px solid;cursor:pointer;transition:all 0.2s;}
+    .btn-edit{border-color:var(--gold-dim);color:var(--gold-dim);background:transparent;}
+    .btn-edit:hover{background:var(--gold);color:white;border-color:var(--gold);}
+    .btn-delete{border-color:#fca5a5;color:#ef4444;background:transparent;}
+    .btn-delete:hover{background:#ef4444;color:white;border-color:#ef4444;}
+    .no-events{text-align:center;padding:48px 24px;color:var(--text-light);}
+    .no-events svg{width:40px;height:40px;fill:var(--border);margin:0 auto 12px;display:block;}
+
+    /* Announcements */
+    .announcement-card{background:white;border:1px solid var(--border-gold);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm);}
+    .announcement-card+.announcement-card{margin-top:16px;}
+    .announcement-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+    .announcement-title{font-size:16px;font-weight:700;color:var(--green);}
+    .announcement-dates{font-size:11px;color:var(--text-light);font-weight:300;margin-top:3px;}
+    .announcement-body{font-size:13.5px;color:var(--text-mid);line-height:1.8;font-weight:300;white-space:pre-line;}
+    .announcement-admin-actions{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+
+    /* Admin forms */
+    .admin-form-card{background:white;border:1.5px solid var(--gold);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:0 0 0 4px rgba(201,168,76,0.08);}
+    .admin-form-title{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:16px;}
+    .admin-form-grid{display:grid;gap:14px;}
+    .btn-admin-add{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:9px 18px;background:var(--green);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+    .btn-admin-add:hover{background:var(--green-mid);}
+    .btn-admin-add svg{width:12px;height:12px;fill:white;}
+
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:white;border-radius:var(--radius);padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+    .modal-title{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+    .modal-actions{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+
+    /* Loading */
+    .loading{display:flex;align-items:center;justify-content:center;padding:40px;gap:10px;color:var(--text-light);font-size:13px;}
+    .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* Checkbox */
+    .checkbox-row{display:flex;align-items:center;gap:10px;cursor:pointer;}
+    .checkbox-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;}
+    .checkbox-row label{font-size:12.5px;color:var(--text);cursor:pointer;}
+
+    /* Mobile overlay sidebar */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:149;}
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      .portal-sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;z-index:150;transform:translateX(-100%);height:calc(100vh - var(--nav-h));}
+      .portal-sidebar.open{transform:translateX(0);}
+      .sidebar-overlay.open{display:block;}
+      .portal-nav-hamburger{display:flex;}
+      .portal-content{padding:20px 16px;}
+      .profile-grid{grid-template-columns:1fr;}
+      .profile-field.full{grid-column:1;}
+      .members-table th:nth-child(3),.members-table td:nth-child(3),
+      .members-table th:nth-child(4),.members-table td:nth-child(4){display:none;}
+      .event-card{flex-direction:column;gap:12px;}
+      .auth-card{padding:32px 24px;}
+    }
+    @media (max-width:600px) {
+      .portal-nav-user{display:none;}
+      .panel-title{font-size:20px;}
+      .members-table th:nth-child(5),.members-table td:nth-child(5){display:none;}
+      .event-date-block{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH SCREENS ── -->
+<div id="authWrap">
+
+  <!-- LOGIN -->
+  <div id="screenLogin" class="auth-wrap">
+    <div class="auth-mesh"></div>
+    <div class="auth-grid"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="PGN Logo"/>
+        <div class="auth-logo-text">
+          <div class="auth-logo-primary">Pittsburgh Golf Network</div>
+          <div class="auth-logo-sub">Member Portal</div>
+        </div>
+      </div>
+      <div class="auth-title">Welcome Back</div>
+      <p class="auth-sub">Sign in to access your member portal. <em>Members only.</em></p>
+      <div id="loginError" class="auth-error" style="display:none;"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="loginEmail" class="form-input" placeholder="you@company.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <div class="auth-link"><a onclick="showScreen('screenForgot')">Forgot your password?</a></div>
+    </div>
+    <a class="auth-back-link" href="/">← Back to pittsburghgolfnetwork.com</a>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="screenForgot" class="auth-wrap" style="display:none;">
+    <div class="auth-mesh"></div>
+    <div class="auth-grid"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="PGN Logo"/>
+        <div class="auth-logo-text">
+          <div class="auth-logo-primary">Pittsburgh Golf Network</div>
+          <div class="auth-logo-sub">Member Portal</div>
+        </div>
+      </div>
+      <div class="auth-title">Reset Password</div>
+      <p class="auth-sub">Enter the email address associated with your membership. If you're an active member, we'll send you a reset link.</p>
+      <div id="forgotError" class="auth-error" style="display:none;"></div>
+      <div id="forgotSuccess" class="auth-success" style="display:none;"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="forgotEmail" class="form-input" placeholder="you@company.com"/>
+      </div>
+      <button class="btn-primary" id="forgotBtn" onclick="handleForgot()">Send Reset Link</button>
+      <div class="auth-link"><a onclick="showScreen('screenLogin')">← Back to sign in</a></div>
+    </div>
+  </div>
+
+  <!-- SET / RESET PASSWORD -->
+  <div id="screenSetPassword" class="auth-wrap" style="display:none;">
+    <div class="auth-mesh"></div>
+    <div class="auth-grid"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="PGN Logo"/>
+        <div class="auth-logo-text">
+          <div class="auth-logo-primary">Pittsburgh Golf Network</div>
+          <div class="auth-logo-sub">Member Portal</div>
+        </div>
+      </div>
+      <div id="setPasswordTitle" class="auth-title">Create Password</div>
+      <p class="auth-sub" id="setPasswordSub">Welcome to Pittsburgh Golf Network! Create your portal password to get started.</p>
+      <div id="setPasswordError" class="auth-error" style="display:none;"></div>
+      <div id="setPasswordSuccess" class="auth-success" style="display:none;"></div>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" id="newPassword" class="form-input" placeholder="At least 8 characters"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-input" placeholder="Repeat password"/>
+      </div>
+      <button class="btn-primary" id="setPasswordBtn" onclick="handleSetPassword()">Set Password</button>
+    </div>
+  </div>
+
+</div><!-- /authWrap -->
+
+<!-- ── PORTAL ── -->
+<div class="portal-wrap" id="portalWrap">
+  <!-- Nav -->
+  <nav class="portal-nav">
+    <div class="portal-nav-logo">
+      <button class="portal-nav-hamburger" id="sidebarToggle" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7dc539c84d38e9e7bc1d7.png" alt="PGN Logo"/>
+      <div class="portal-nav-logo-text">
+        <div class="portal-nav-logo-primary">Pittsburgh Golf Network</div>
+        <div class="portal-nav-logo-sub">Member Portal</div>
+      </div>
+    </div>
+    <div class="portal-nav-right">
+      <div class="portal-nav-user">Welcome, <span id="navUserName"></span></div>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="portal-body">
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="portal-sidebar" id="portalSidebar">
+      <div class="sidebar-section-label">My Account</div>
+      <div class="sidebar-nav-item active" data-tab="myProfile" onclick="switchTab('myProfile',this)">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        My Profile
+      </div>
+      <div class="sidebar-section-label">Network</div>
+      <div class="sidebar-nav-item" data-tab="memberDirectory" onclick="switchTab('memberDirectory',this)">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Member Directory
+      </div>
+      <div class="sidebar-nav-item" data-tab="events" onclick="switchTab('events',this)">
+        <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        Events
+      </div>
+      <div class="sidebar-nav-item" data-tab="announcements" onclick="switchTab('announcements',this)">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+        Announcements
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="portal-content">
+
+      <!-- MY PROFILE -->
+      <div class="tab-panel active" id="tab-myProfile">
+        <div class="panel-header">
+          <div class="panel-eyebrow">My Account</div>
+          <h1 class="panel-title">My Profile</h1>
+        </div>
+
+        <!-- Subscription card -->
+        <div class="sub-card" id="subCard">
+          <div class="sub-badge">
+            <svg viewBox="0 0 24 24" style="width:10px;height:10px;fill:var(--gold)"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            Active Membership
+          </div>
+          <div id="subType" class="sub-type">—</div>
+          <div id="subDetail" class="sub-detail">Loading payment details…</div>
+          <div class="sub-contact">To make changes to your subscription or payment method, contact us at <a href="mailto:golf@pittsburghgolfnetwork.com">golf@pittsburghgolfnetwork.com</a></div>
+        </div>
+
+        <!-- Read-only fields -->
+        <div class="card" id="profileReadCard">
+          <div class="card-title-row">
+            <div class="card-title">Member Information</div>
+            <button class="edit-toggle" onclick="toggleProfileEdit()">Edit Profile</button>
+          </div>
+          <div class="profile-grid" id="profileViewGrid">
+            <div class="profile-field"><div class="profile-field-label">First Name</div><div class="profile-field-value" id="vFirstName">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Last Name</div><div class="profile-field-value" id="vLastName">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Phone</div><div class="profile-field-value" id="vPhone">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Email</div><div class="profile-field-value" id="vEmail">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Job Title</div><div class="profile-field-value" id="vJobTitle">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Company</div><div class="profile-field-value" id="vCompany">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Golf Handicap / Score Range</div><div class="profile-field-value" id="vHandicap">—</div></div>
+            <div class="profile-field"><div class="profile-field-label">Industry</div><div class="profile-field-value" id="vIndustry">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">If Other, Please Specify Industry</div><div class="profile-field-value" id="vIndustryOther">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">Current Business Focus</div><div class="profile-field-value" id="vBusinessFocus">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">If Other, Please Specify Business Focus</div><div class="profile-field-value" id="vBusinessFocusOther">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">What Type of Connection Would Be Most Valuable?</div><div class="profile-field-value" id="vConnectionType">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">Specific Industries or Roles to Be Paired With</div><div class="profile-field-value" id="vPairedWith">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">Biggest Business Challenge & Desired Connection</div><div class="profile-field-value" id="vChallenge">—</div></div>
+            <div class="profile-field full"><div class="profile-field-label">PGN Members to Reconnect With or Meet</div><div class="profile-field-value" id="vReconnect">—</div></div>
+          </div>
+        </div>
+
+        <!-- Edit form (hidden by default) -->
+        <div class="card" id="profileEditCard" style="display:none;">
+          <div class="card-title-row">
+            <div class="card-title">Edit Profile</div>
+          </div>
+          <div class="profile-grid">
+            <div class="profile-field"><div class="profile-field-label">Phone</div><input type="tel" class="profile-input" id="ePhone" placeholder="Phone number"/></div>
+            <div class="profile-field"><div class="profile-field-label">Email</div><input type="email" class="profile-input" id="eEmail" placeholder="Email address"/></div>
+            <div class="profile-field"><div class="profile-field-label">Job Title</div><input type="text" class="profile-input" id="eJobTitle" placeholder="Your job title"/></div>
+            <div class="profile-field"><div class="profile-field-label">Company</div><input type="text" class="profile-input" id="eCompany" placeholder="Company name"/></div>
+            <div class="profile-field"><div class="profile-field-label">Golf Handicap / Score Range</div><input type="text" class="profile-input" id="eHandicap" placeholder="e.g. 10-15 or 85-90"/></div>
+            <div class="profile-field"><div class="profile-field-label">Industry</div><input type="text" class="profile-input" id="eIndustry" placeholder="Your industry"/></div>
+            <div class="profile-field full"><div class="profile-field-label">If Other, Please Specify Industry</div><input type="text" class="profile-input" id="eIndustryOther"/></div>
+            <div class="profile-field full"><div class="profile-field-label">Current Business Focus</div><input type="text" class="profile-input" id="eBusinessFocus"/></div>
+            <div class="profile-field full"><div class="profile-field-label">If Other, Please Specify Business Focus</div><input type="text" class="profile-input" id="eBusinessFocusOther"/></div>
+            <div class="profile-field full"><div class="profile-field-label">What Type of Connection Would Be Most Valuable?</div><textarea class="profile-input profile-textarea" id="eConnectionType"></textarea></div>
+            <div class="profile-field full"><div class="profile-field-label">Specific Industries or Roles to Be Paired With</div><textarea class="profile-input profile-textarea" id="ePairedWith"></textarea></div>
+            <div class="profile-field full"><div class="profile-field-label">Biggest Business Challenge & Desired Connection</div><textarea class="profile-input profile-textarea" id="eChallenge"></textarea></div>
+            <div class="profile-field full"><div class="profile-field-label">PGN Members to Reconnect With or Meet</div><textarea class="profile-input profile-textarea" id="eReconnect"></textarea></div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-save" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
+            <button class="btn-cancel" onclick="toggleProfileEdit()">Cancel</button>
+          </div>
+          <div class="save-msg" id="saveMsg">✓ Profile updated successfully.</div>
+        </div>
+      </div>
+
+      <!-- MEMBER DIRECTORY -->
+      <div class="tab-panel" id="tab-memberDirectory">
+        <div class="panel-header">
+          <div class="panel-eyebrow">Network</div>
+          <h1 class="panel-title">Member Directory</h1>
+          <p class="panel-sub">All active Pittsburgh Golf Network members.</p>
+        </div>
+        <div class="card">
+          <div class="search-bar">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="memberSearch" placeholder="Search members by name, company, or title…" oninput="filterMembers()"/>
+          </div>
+          <div class="members-count" id="membersCount"></div>
+          <div id="membersLoading" class="loading"><div class="spinner"></div> Loading members…</div>
+          <table class="members-table" id="membersTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Phone</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="membersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="tab-panel" id="tab-events">
+        <div class="panel-header">
+          <div class="panel-eyebrow">Network</div>
+          <h1 class="panel-title">Upcoming Events</h1>
+          <p class="panel-sub" id="eventsPanelSub">All upcoming Pittsburgh Golf Network events.</p>
+        </div>
+
+        <!-- Admin: New Event Form -->
+        <div class="admin-form-card" id="adminEventForm" style="display:none;">
+          <div class="admin-form-title" id="eventFormTitle">+ New Event</div>
+          <div class="admin-form-grid">
+            <div><label class="profile-field-label">Title *</label><input type="text" class="profile-input" id="evTitle" placeholder="Event title"/></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div><label class="profile-field-label">Date *</label><input type="date" class="profile-input" id="evDate"/></div>
+              <div><label class="profile-field-label">Time</label><input type="text" class="profile-input" id="evTime" placeholder="e.g. 8:00 AM Shotgun"/></div>
+            </div>
+            <div><label class="profile-field-label">Location</label><input type="text" class="profile-input" id="evLocation" placeholder="Course or venue name"/></div>
+            <div><label class="profile-field-label">Description</label><textarea class="profile-input profile-textarea" id="evDescription" placeholder="Event details…"></textarea></div>
+            <div class="checkbox-row"><input type="checkbox" id="evRestricted"/><label for="evRestricted">Restrict to Monthly &amp; Annual only (Nov–Mar event)</label></div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-save" id="saveEventBtn" onclick="saveEvent()">Save Event</button>
+            <button class="btn-cancel" onclick="cancelEventForm()">Cancel</button>
+          </div>
+        </div>
+
+        <div id="adminAddEventBtn" style="display:none;margin-bottom:16px;">
+          <button class="btn-admin-add" onclick="openNewEventForm()">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Add Event
+          </button>
+        </div>
+
+        <div id="eventsLoading" class="loading"><div class="spinner"></div> Loading events…</div>
+        <div class="events-list" id="eventsList" style="display:none;"></div>
+        <div id="eventsEmpty" class="no-events" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+          <div style="font-size:14px;font-weight:600;color:var(--text-mid);margin-bottom:6px;">No upcoming events</div>
+          <div style="font-size:13px;">Check back soon for new events.</div>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENTS -->
+      <div class="tab-panel" id="tab-announcements">
+        <div class="panel-header">
+          <div class="panel-eyebrow">Network</div>
+          <h1 class="panel-title">Announcements</h1>
+        </div>
+
+        <!-- Admin: New Announcement Form -->
+        <div class="admin-form-card" id="adminAnnouncementForm" style="display:none;">
+          <div class="admin-form-title" id="announcementFormTitle">+ New Announcement</div>
+          <div class="admin-form-grid">
+            <div><label class="profile-field-label">Title *</label><input type="text" class="profile-input" id="anTitle" placeholder="Announcement title"/></div>
+            <div><label class="profile-field-label">Body *</label><textarea class="profile-input profile-textarea" style="min-height:120px;" id="anBody" placeholder="Announcement body…"></textarea></div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn-save" onclick="saveAnnouncement()">Save Announcement</button>
+            <button class="btn-cancel" onclick="cancelAnnouncementForm()">Cancel</button>
+          </div>
+        </div>
+
+        <div id="adminAddAnnouncementBtn" style="display:none;margin-bottom:16px;">
+          <button class="btn-admin-add" onclick="openNewAnnouncementForm()">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            New Announcement
+          </button>
+        </div>
+
+        <div id="announcementsLoading" class="loading"><div class="spinner"></div> Loading announcements…</div>
+        <div id="announcementsList" style="display:none;"></div>
+        <div id="announcementsEmpty" style="display:none;text-align:center;padding:48px;color:var(--text-light);font-size:13px;">No announcements yet.</div>
+      </div>
+
+    </main>
+  </div><!-- /portal-body -->
+</div><!-- /portalWrap -->
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-title">Confirm Delete</div>
+    <p style="font-size:14px;color:var(--text-mid);line-height:1.6;" id="deleteModalMsg">Are you sure you want to delete this item? This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-save" style="background:#ef4444;" onclick="confirmDelete()">Delete</button>
+      <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let currentUser = null;
+let authToken = null;
+let contactData = null;
+let allMembers = [];
+let allEvents = [];
+let editingEventId = null;
+let editingAnnouncementId = null;
+let deleteCallback = null;
+
+// ── INIT ──
+(function init() {
+  const token = sessionStorage.getItem('pgn_token');
+  const user = sessionStorage.getItem('pgn_user');
+  if (token && user) {
+    authToken = token;
+    currentUser = JSON.parse(user);
+    showPortal();
+  } else {
+    checkUrlTokens();
+  }
+})();
+
+function checkUrlTokens() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('setup')) {
+    showScreen('screenSetPassword');
+    document.getElementById('setPasswordTitle').textContent = 'Create Your Password';
+    document.getElementById('setPasswordSub').textContent = 'Welcome to Pittsburgh Golf Network! Create your portal password to get started.';
+  } else if (params.get('reset')) {
+    showScreen('screenSetPassword');
+    document.getElementById('setPasswordTitle').textContent = 'Reset Password';
+    document.getElementById('setPasswordSub').textContent = 'Enter and confirm your new password below.';
+  }
+}
+
+// ── SCREEN MANAGEMENT ──
+function showScreen(id) {
+  ['screenLogin','screenForgot','screenSetPassword'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'flex' : 'none';
+  });
+  document.getElementById('authWrap').style.display = 'flex';
+  document.getElementById('portalWrap').classList.remove('visible');
+}
+
+function showPortal() {
+  document.getElementById('authWrap').style.display = 'none';
+  document.getElementById('portalWrap').classList.add('visible');
+  document.getElementById('navUserName').textContent = currentUser.name || currentUser.email;
+
+  if (currentUser.isAdmin) {
+    document.getElementById('adminAddEventBtn').style.display = 'block';
+    document.getElementById('adminAddAnnouncementBtn').style.display = 'block';
+  }
+
+  loadProfile();
+  loadSubscription();
+}
+
+// ── AUTH ──
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+
+  errEl.style.display = 'none';
+  if (!email || !password) { showError(errEl, 'Please enter your email and password.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  try {
+    const res = await api('/api/auth/login', 'POST', { email, password });
+    authToken = res.token;
+    currentUser = res.user;
+    sessionStorage.setItem('pgn_token', authToken);
+    sessionStorage.setItem('pgn_user', JSON.stringify(currentUser));
+    showPortal();
+  } catch(e) {
+    showError(errEl, e.message);
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+async function handleForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const errEl = document.getElementById('forgotError');
+  const sucEl = document.getElementById('forgotSuccess');
+  const btn = document.getElementById('forgotBtn');
+
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+  if (!email) { showError(errEl, 'Please enter your email address.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const res = await api('/api/auth/forgot-password', 'POST', { email });
+    sucEl.textContent = res.message;
+    sucEl.style.display = 'block';
+    btn.textContent = 'Sent!';
+  } catch(e) {
+    showError(errEl, e.message);
+    btn.disabled = false; btn.textContent = 'Send Reset Link';
+  }
+}
+
+async function handleSetPassword() {
+  const password = document.getElementById('newPassword').value;
+  const confirm = document.getElementById('confirmPassword').value;
+  const errEl = document.getElementById('setPasswordError');
+  const sucEl = document.getElementById('setPasswordSuccess');
+  const btn = document.getElementById('setPasswordBtn');
+
+  errEl.style.display = 'none'; sucEl.style.display = 'none';
+
+  if (password.length < 8) { showError(errEl, 'Password must be at least 8 characters.'); return; }
+  if (password !== confirm) { showError(errEl, 'Passwords do not match.'); return; }
+
+  const params = new URLSearchParams(window.location.search);
+  const setupToken = params.get('setup');
+  const resetToken = params.get('reset');
+  const token = setupToken || resetToken;
+  const endpoint = setupToken ? '/api/auth/set-password' : '/api/auth/reset-password';
+
+  btn.disabled = true; btn.textContent = 'Setting password…';
+
+  try {
+    const res = await api(endpoint, 'POST', { token, password });
+    sucEl.textContent = res.message + ' Redirecting to login…';
+    sucEl.style.display = 'block';
+    setTimeout(() => {
+      window.history.replaceState({}, '', '/members');
+      showScreen('screenLogin');
+    }, 2500);
+  } catch(e) {
+    showError(errEl, e.message);
+    btn.disabled = false; btn.textContent = 'Set Password';
+  }
+}
+
+function handleLogout() {
+  sessionStorage.removeItem('pgn_token');
+  sessionStorage.removeItem('pgn_user');
+  authToken = null; currentUser = null;
+  showScreen('screenLogin');
+}
+
+// ── PROFILE ──
+async function loadProfile() {
+  try {
+    const res = await api('/api/ghl/contact', 'GET');
+    contactData = res.contact;
+    renderProfileView(contactData);
+  } catch(e) {
+    console.error('Failed to load profile:', e);
+  }
+}
+
+async function loadSubscription() {
+  try {
+    const res = await api('/api/ghl/subscription', 'GET');
+    document.getElementById('subType').textContent = res.subscriptionType;
+    const detail = res.last4
+      ? `Card ending in ${res.last4}`
+      : 'Payment details on file';
+    document.getElementById('subDetail').textContent = detail;
+  } catch(e) {
+    document.getElementById('subDetail').textContent = 'Unable to load payment details.';
+  }
+}
+
+function renderProfileView(c) {
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val || '—';
+    el.classList.toggle('empty', !val);
+  };
+  set('vFirstName', c.firstName);
+  set('vLastName', c.lastName);
+  set('vPhone', c.phone);
+  set('vEmail', c.email);
+  set('vJobTitle', c.jobTitle);
+  set('vCompany', c.company);
+  set('vHandicap', c.golf_handicap_score_range);
+  set('vIndustry', c.industry);
+  set('vIndustryOther', c.if_other_please_specify_your_industry);
+  set('vBusinessFocus', c.current_business_focus);
+  set('vBusinessFocusOther', c.if_other_please_specify_your_business_focus);
+  set('vConnectionType', c.what_type_of_connection_would_be_most_valuable_to_you_right_now);
+  set('vPairedWith', c.are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with);
+  set('vChallenge', c.what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming);
+  set('vReconnect', c.are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time);
+}
+
+function populateEditForm(c) {
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  setVal('ePhone', c.phone);
+  setVal('eEmail', c.email);
+  setVal('eJobTitle', c.jobTitle);
+  setVal('eCompany', c.company);
+  setVal('eHandicap', c.golf_handicap_score_range);
+  setVal('eIndustry', c.industry);
+  setVal('eIndustryOther', c.if_other_please_specify_your_industry);
+  setVal('eBusinessFocus', c.current_business_focus);
+  setVal('eBusinessFocusOther', c.if_other_please_specify_your_business_focus);
+  setVal('eConnectionType', c.what_type_of_connection_would_be_most_valuable_to_you_right_now);
+  setVal('ePairedWith', c.are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with);
+  setVal('eChallenge', c.what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming);
+  setVal('eReconnect', c.are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time);
+}
+
+let profileEditOpen = false;
+function toggleProfileEdit() {
+  profileEditOpen = !profileEditOpen;
+  document.getElementById('profileEditCard').style.display = profileEditOpen ? 'block' : 'none';
+  document.getElementById('profileReadCard').style.display = profileEditOpen ? 'none' : 'block';
+  if (profileEditOpen && contactData) populateEditForm(contactData);
+  document.getElementById('saveMsg').classList.remove('visible');
+}
+
+async function saveProfile() {
+  const btn = document.getElementById('saveProfileBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const updates = {
+    phone: document.getElementById('ePhone').value,
+    email: document.getElementById('eEmail').value,
+    jobTitle: document.getElementById('eJobTitle').value,
+    company: document.getElementById('eCompany').value,
+    golf_handicap_score_range: document.getElementById('eHandicap').value,
+    industry: document.getElementById('eIndustry').value,
+    if_other_please_specify_your_industry: document.getElementById('eIndustryOther').value,
+    current_business_focus: document.getElementById('eBusinessFocus').value,
+    if_other_please_specify_your_business_focus: document.getElementById('eBusinessFocusOther').value,
+    what_type_of_connection_would_be_most_valuable_to_you_right_now: document.getElementById('eConnectionType').value,
+    are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: document.getElementById('ePairedWith').value,
+    what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: document.getElementById('eChallenge').value,
+    are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: document.getElementById('eReconnect').value,
+  };
+
+  try {
+    await api('/api/ghl/contact', 'PATCH', updates);
+    contactData = { ...contactData, ...updates };
+    renderProfileView(contactData);
+    document.getElementById('saveMsg').classList.add('visible');
+    setTimeout(() => toggleProfileEdit(), 1500);
+  } catch(e) {
+    alert('Failed to save: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Changes';
+  }
+}
+
+// ── MEMBERS DIRECTORY ──
+async function loadMembers() {
+  if (allMembers.length) return; // cached
+  document.getElementById('membersLoading').style.display = 'flex';
+  document.getElementById('membersTable').style.display = 'none';
+
+  try {
+    const res = await api('/api/ghl/members', 'GET');
+    allMembers = res.members;
+    renderMembers(allMembers);
+  } catch(e) {
+    document.getElementById('membersLoading').innerHTML = '<span style="color:#b91c1c">Failed to load members. Please refresh.</span>';
+  }
+}
+
+function renderMembers(members) {
+  document.getElementById('membersLoading').style.display = 'none';
+  document.getElementById('membersTable').style.display = 'table';
+  document.getElementById('membersCount').textContent = `${members.length} active member${members.length !== 1 ? 's' : ''}`;
+
+  const tbody = document.getElementById('membersBody');
+  tbody.innerHTML = members.map(m => {
+    const initials = ((m.firstName||'')[0]||(m.email[0]||'?')).toUpperCase() +
+                     ((m.lastName||'')[0]||'').toUpperCase();
+    return `<tr>
+      <td><div class="member-name-cell">
+        <div class="member-initials">${initials}</div>
+        <span class="member-name">${esc(m.firstName)} ${esc(m.lastName)}</span>
+      </div></td>
+      <td>${esc(m.jobTitle)}</td>
+      <td>${esc(m.company)}</td>
+      <td>${esc(m.phone)}</td>
+      <td><a href="mailto:${esc(m.email)}" style="color:var(--gold-dim)">${esc(m.email)}</a></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterMembers() {
+  const q = document.getElementById('memberSearch').value.toLowerCase();
+  const filtered = allMembers.filter(m =>
+    (m.firstName+' '+m.lastName).toLowerCase().includes(q) ||
+    (m.company||'').toLowerCase().includes(q) ||
+    (m.jobTitle||'').toLowerCase().includes(q) ||
+    (m.email||'').toLowerCase().includes(q)
+  );
+  renderMembers(filtered);
+}
+
+// ── EVENTS ──
+async function loadEvents() {
+  document.getElementById('eventsLoading').style.display = 'flex';
+  document.getElementById('eventsList').style.display = 'none';
+  document.getElementById('eventsEmpty').style.display = 'none';
+
+  try {
+    const res = await api('/api/events', 'GET');
+    allEvents = res.events;
+    renderEvents(allEvents);
+  } catch(e) {
+    document.getElementById('eventsLoading').innerHTML = '<span style="color:#b91c1c">Failed to load events.</span>';
+  }
+}
+
+function renderEvents(events) {
+  document.getElementById('eventsLoading').style.display = 'none';
+
+  if (!events.length) {
+    document.getElementById('eventsEmpty').style.display = 'block';
+    document.getElementById('eventsList').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('eventsList').style.display = 'flex';
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  document.getElementById('eventsList').innerHTML = events.map(evt => {
+    const d = new Date(evt.event_date + 'T12:00:00');
+    const month = monthNames[d.getMonth()];
+    const day = d.getDate();
+
+    const adminBtns = currentUser?.isAdmin ? `
+      <div class="event-admin-actions">
+        <button class="btn-sm btn-edit" onclick="editEvent('${evt.id}')">Edit</button>
+        <button class="btn-sm btn-delete" onclick="promptDelete('event','${evt.id}','${esc(evt.title)}')">Delete</button>
+      </div>` : '';
+
+    const restrictedBadge = evt.restricted
+      ? `<div class="event-restricted-badge">🏌️ Monthly &amp; Annual Members Only</div>`
+      : '';
+
+    return `<div class="event-card">
+      <div class="event-date-block">
+        <div class="event-date-month">${month}</div>
+        <div class="event-date-day">${day}</div>
+      </div>
+      <div class="event-info">
+        <div class="event-title">${esc(evt.title)}</div>
+        <div class="event-meta">
+          ${evt.event_time ? `<div class="event-meta-item"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>${esc(evt.event_time)}</div>` : ''}
+          ${evt.location ? `<div class="event-meta-item"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>${esc(evt.location)}</div>` : ''}
+        </div>
+        ${evt.description ? `<div class="event-desc">${esc(evt.description)}</div>` : ''}
+        ${restrictedBadge}
+        ${adminBtns}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewEventForm() {
+  editingEventId = null;
+  document.getElementById('eventFormTitle').textContent = '+ New Event';
+  document.getElementById('evTitle').value = '';
+  document.getElementById('evDate').value = '';
+  document.getElementById('evTime').value = '';
+  document.getElementById('evLocation').value = '';
+  document.getElementById('evDescription').value = '';
+  document.getElementById('evRestricted').checked = false;
+  document.getElementById('adminEventForm').style.display = 'block';
+  document.getElementById('saveEventBtn').textContent = 'Save Event';
+  document.getElementById('adminAddEventBtn').style.display = 'none';
+}
+
+function editEvent(id) {
+  const evt = allEvents.find(e => e.id === id);
+  if (!evt) return;
+  editingEventId = id;
+  document.getElementById('eventFormTitle').textContent = 'Edit Event';
+  document.getElementById('evTitle').value = evt.title || '';
+  document.getElementById('evDate').value = evt.event_date || '';
+  document.getElementById('evTime').value = evt.event_time || '';
+  document.getElementById('evLocation').value = evt.location || '';
+  document.getElementById('evDescription').value = evt.description || '';
+  document.getElementById('evRestricted').checked = !!evt.restricted;
+  document.getElementById('adminEventForm').style.display = 'block';
+  document.getElementById('saveEventBtn').textContent = 'Update Event';
+  document.getElementById('adminAddEventBtn').style.display = 'none';
+  document.getElementById('adminEventForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEventForm() {
+  document.getElementById('adminEventForm').style.display = 'none';
+  document.getElementById('adminAddEventBtn').style.display = 'block';
+  editingEventId = null;
+}
+
+async function saveEvent() {
+  const title = document.getElementById('evTitle').value.trim();
+  const event_date = document.getElementById('evDate').value;
+  if (!title || !event_date) { alert('Title and date are required.'); return; }
+
+  const payload = {
+    title,
+    event_date,
+    event_time: document.getElementById('evTime').value,
+    location: document.getElementById('evLocation').value,
+    description: document.getElementById('evDescription').value,
+    restricted: document.getElementById('evRestricted').checked,
+  };
+
+  const btn = document.getElementById('saveEventBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    if (editingEventId) {
+      await api(`/api/events?id=${editingEventId}`, 'PATCH', payload);
+    } else {
+      await api('/api/events', 'POST', payload);
+    }
+    cancelEventForm();
+    allEvents = []; // clear cache
+    await loadEvents();
+  } catch(e) {
+    alert('Failed to save event: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── ANNOUNCEMENTS ──
+async function loadAnnouncements() {
+  document.getElementById('announcementsLoading').style.display = 'flex';
+  document.getElementById('announcementsList').style.display = 'none';
+
+  try {
+    const res = await api('/api/announcements', 'GET');
+    renderAnnouncements(res.announcements);
+  } catch(e) {
+    document.getElementById('announcementsLoading').innerHTML = '<span style="color:#b91c1c">Failed to load announcements.</span>';
+  }
+}
+
+function renderAnnouncements(announcements) {
+  document.getElementById('announcementsLoading').style.display = 'none';
+
+  if (!announcements.length) {
+    document.getElementById('announcementsEmpty').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('announcementsList').style.display = 'block';
+  document.getElementById('announcementsList').innerHTML = announcements.map(a => {
+    const posted = formatDate(a.posted_date);
+    const edited = formatDate(a.last_edited_date);
+    const datesStr = posted === edited
+      ? `Posted ${posted}`
+      : `Posted ${posted} · Last edited ${edited}`;
+
+    const adminBtns = currentUser?.isAdmin ? `
+      <div class="announcement-admin-actions">
+        <button class="btn-sm btn-edit" onclick="editAnnouncement('${a.id}')">Edit</button>
+        <button class="btn-sm btn-delete" onclick="promptDelete('announcement','${a.id}','${esc(a.title)}')">Delete</button>
+      </div>` : '';
+
+    return `<div class="announcement-card">
+      <div class="announcement-header">
+        <div>
+          <div class="announcement-title">${esc(a.title)}</div>
+          <div class="announcement-dates">${datesStr}</div>
+        </div>
+      </div>
+      <div class="announcement-body">${esc(a.body)}</div>
+      ${adminBtns}
+    </div>`;
+  }).join('');
+}
+
+function openNewAnnouncementForm() {
+  editingAnnouncementId = null;
+  document.getElementById('announcementFormTitle').textContent = '+ New Announcement';
+  document.getElementById('anTitle').value = '';
+  document.getElementById('anBody').value = '';
+  document.getElementById('adminAnnouncementForm').style.display = 'block';
+  document.getElementById('adminAddAnnouncementBtn').style.display = 'none';
+}
+
+function editAnnouncement(id) {
+  // Find from DOM since we don't cache announcements separately
+  editingAnnouncementId = id;
+  document.getElementById('announcementFormTitle').textContent = 'Edit Announcement';
+  document.getElementById('adminAnnouncementForm').style.display = 'block';
+  document.getElementById('adminAddAnnouncementBtn').style.display = 'none';
+  document.getElementById('adminAnnouncementForm').scrollIntoView({ behavior: 'smooth' });
+  // We'll re-fetch to get current values
+  api('/api/announcements', 'GET').then(res => {
+    const a = res.announcements.find(x => x.id === id);
+    if (a) {
+      document.getElementById('anTitle').value = a.title || '';
+      document.getElementById('anBody').value = a.body || '';
+    }
+  });
+}
+
+function cancelAnnouncementForm() {
+  document.getElementById('adminAnnouncementForm').style.display = 'none';
+  document.getElementById('adminAddAnnouncementBtn').style.display = 'block';
+  editingAnnouncementId = null;
+}
+
+async function saveAnnouncement() {
+  const title = document.getElementById('anTitle').value.trim();
+  const body = document.getElementById('anBody').value.trim();
+  if (!title || !body) { alert('Title and body are required.'); return; }
+
+  try {
+    if (editingAnnouncementId) {
+      await api(`/api/announcements?id=${editingAnnouncementId}`, 'PATCH', { title, body });
+    } else {
+      await api('/api/announcements', 'POST', { title, body });
+    }
+    cancelAnnouncementForm();
+    await loadAnnouncements();
+  } catch(e) {
+    alert('Failed to save: ' + e.message);
+  }
+}
+
+// ── DELETE MODAL ──
+function promptDelete(type, id, label) {
+  document.getElementById('deleteModalMsg').textContent = `Delete "${label}"? This cannot be undone.`;
+  deleteCallback = async () => {
+    const endpoint = type === 'event' ? `/api/events?id=${id}` : `/api/announcements?id=${id}`;
+    await api(endpoint, 'DELETE');
+    closeDeleteModal();
+    if (type === 'event') { allEvents = []; loadEvents(); }
+    else loadAnnouncements();
+  };
+  document.getElementById('deleteModal').classList.add('open');
+}
+
+async function confirmDelete() {
+  if (deleteCallback) {
+    try { await deleteCallback(); } catch(e) { alert('Delete failed: ' + e.message); }
+    deleteCallback = null;
+  }
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('open');
+}
+
+// ── TAB SWITCHING ──
+function switchTab(tabId, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  el.classList.add('active');
+  closeSidebar();
+
+  if (tabId === 'memberDirectory') loadMembers();
+  if (tabId === 'events') loadEvents();
+  if (tabId === 'announcements') loadAnnouncements();
+}
+
+// ── SIDEBAR (mobile) ──
+function toggleSidebar() {
+  const sidebar = document.getElementById('portalSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle = document.getElementById('sidebarToggle');
+  const open = sidebar.classList.toggle('open');
+  overlay.classList.toggle('open', open);
+  toggle.classList.toggle('open', open);
+}
+
+function closeSidebar() {
+  document.getElementById('portalSidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.getElementById('sidebarToggle').classList.remove('open');
+}
+
+// ── UTILITIES ──
+async function api(url, method, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+  };
+  if (authToken) opts.headers['Authorization'] = `Bearer ${authToken}`;
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function showError(el, msg) {
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// Enter key support on login
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+document.getElementById('loginEmail').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+});
+</script>
+</body>
+</html>
