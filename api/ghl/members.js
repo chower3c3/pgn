@@ -56,8 +56,6 @@ module.exports = async function handler(req, res) {
 
       // GHL v2 returns custom fields as an array: [{id, value, fieldKey}]
       const customFields = c.customFields || c.customField || [];
-
-      const customFields = c.customFields || c.customField || [];
       const getCustomField = (id) => {
         const field = Array.isArray(customFields) ? customFields.find(f => f.id === id) : null;
         return field?.value || '';
