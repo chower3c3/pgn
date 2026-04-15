@@ -3,11 +3,26 @@
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "privacy-policy.html", "use": "@vercel/static" },
-    { "src": "terms.html", "use": "@vercel/static" }
+    { "src": "terms.html", "use": "@vercel/static" },
+    { "src": "members/index.html", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/privacy-policy", "dest": "/privacy-policy.html" },
     { "src": "/terms", "dest": "/terms.html" },
+    { "src": "/members", "dest": "/members/index.html" },
+    { "src": "/members/", "dest": "/members/index.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://pittsburghgolfnetwork.com" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PATCH, DELETE, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Authorization, Content-Type" }
+      ]
+    }
   ]
 }
