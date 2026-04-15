@@ -41,7 +41,7 @@ async function checkGHLActiveStatus(email) {
     }
   );
   const subData = await subRes.json();
-  const subscriptions = subData.subscriptions || subData.list || [];
+  const subscriptions = subData.data || subData.subscriptions || subData.list || [];
 
   const activeSub = subscriptions.find(s => s.status === 'active' || s.status === 'trialing');
   if (!activeSub) return { active: false, contact, subscriptionType: null };
