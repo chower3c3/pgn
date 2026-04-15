@@ -20,6 +20,7 @@ async function checkGHLActiveStatus(email) {
       headers: {
         Authorization: `Bearer ${process.env.GHL_API_KEY}`,
         'Content-Type': 'application/json',
+        'Version': '2021-07-28',
       },
     }
   );
