@@ -26,7 +26,7 @@ async function isActiveMember(email) {
   );
   const subData = await subRes.json();
   const subs = subData.subscriptions || subData.list || [];
-  return subs.some(s => s.status === 'active');
+  return subs.some(s => s.status === 'active' || s.status === 'trialing');
 }
 
 module.exports = async function handler(req, res) {
