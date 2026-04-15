@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
 
   while (hasMore) {
     const subRes = await fetch(
-      `${GHL_BASE}/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&limit=100&startAfter=${page > 1 ? (page-1)*100 : ''}`,
+      `${GHL_BASE}/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&limit=100&page=${page}`,
       { headers }
     );
     const subData = await subRes.json();
