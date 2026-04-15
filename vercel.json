@@ -1,19 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "privacy-policy.html", "use": "@vercel/static" },
-    { "src": "terms.html", "use": "@vercel/static" },
-    { "src": "members/index.html", "use": "@vercel/static" },
-    { "src": "api/**/*.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/privacy-policy", "dest": "/privacy-policy.html" },
-    { "src": "/terms", "dest": "/terms.html" },
-    { "src": "/members", "dest": "/members/index.html" },
-    { "src": "/members/", "dest": "/members/index.html" },
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/members", "destination": "/members/index.html" },
+    { "source": "/members/", "destination": "/members/index.html" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
