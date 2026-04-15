@@ -50,18 +50,17 @@ module.exports = async function handler(req, res) {
       if (!r.ok) return null;
       const data = await r.json();
       const c = data.contact || data;
-      console.log('customFields:', JSON.stringify(c.customFields || c.customField));
 
       // Skip admin email
       if (c.email?.toLowerCase() === process.env.ADMIN_EMAIL?.toLowerCase()) return null;
 
       // GHL v2 returns custom fields as an array: [{id, value, fieldKey}]
       const customFields = c.customFields || c.customField || [];
-      const getCustomField = (key) => {
-        const field = Array.isArray(customFields)
-          ? customFields.find(f => f.fieldKey === key || f.id === key)
-          : customFields[key];
-        return field?.value || field || '';
+
+      const customFields = c.customFields || c.customField || [];
+      const getCustomField = (id) => {
+        const field = Array.isArray(customFields) ? customFields.find(f => f.id === id) : null;
+        return field?.value || '';
       };
 
       return {
@@ -70,9 +69,10 @@ module.exports = async function handler(req, res) {
         lastName: c.lastName || lastName,
         phone: c.phone || sub.contactPhone || '',
         email: c.email || sub.contactEmail || '',
-        jobTitle: c.jobTitle || getCustomField('job_title') || getCustomField('contact.job_title') || '',
-        company: c.companyName || c.company || getCustomField('company') || getCustomField('contact.company') || '',
+        jobTitle: getCustomField('fHdccyRA0BZvyw98iNYq'),
+        company: getCustomField('pEyjPQ34MBI1ERIwDTq6'),
       };
+      
     } catch {
       return null;
     }
