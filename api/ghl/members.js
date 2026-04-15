@@ -5,7 +5,7 @@
 
 const { verifyToken } = require('../_middleware/auth');
 
-const GHL_BASE = 'https://rest.gohighlevel.com/v1';
+const GHL_BASE = 'https://services.leadconnectorhq.com';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
