@@ -29,7 +29,10 @@ module.exports = async function handler(req, res) {
       `${GHL_BASE}/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&limit=100&page=${page}`,
       { headers }
     );
-    const subData = await subRes.json();
+    const rawText = await subRes.text();
+    console.log('GHL subscriptions status:', subRes.status);
+    console.log('GHL subscriptions response:', rawText);
+    const subData = rawText ? JSON.parse(rawText) : {};
     const subs = subData.subscriptions || subData.list || [];
     const filtered = subs.filter(s => s.status === 'active' || s.status === 'trialing');
     allSubscriptions = [...allSubscriptions, ...filtered];
