@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
 
   while (hasMore) {
     const subRes = await fetch(
-      `${GHL_BASE}/subscriptions/?altId=${process.env.GHL_LOCATION_ID}&altType=location&limit=100&page=${page}`,
+      `${GHL_BASE}/payments/subscriptions?altId=${process.env.GHL_LOCATION_ID}&altType=location&limit=100&page=${page}`,
       { headers }
     );
     const rawText = await subRes.text();
