@@ -827,15 +827,19 @@ async function saveProfile() {
 
 // ── MEMBERS DIRECTORY ──
 async function loadMembers() {
-  //if (allMembers.length) return; // cached
+  if (allMembers.length) return; // cached
+  console.log('loadMembers called');
   document.getElementById('membersLoading').style.display = 'flex';
   document.getElementById('membersTable').style.display = 'none';
 
   try {
+    console.log('calling API...');
     const res = await api('/api/ghl/members', 'GET');
+    console.log('API response:', res);
     allMembers = res.members;
     renderMembers(allMembers);
   } catch(e) {
+    console.log('API error:', e);
     document.getElementById('membersLoading').innerHTML = '<span style="color:#b91c1c">Failed to load members. Please refresh.</span>';
   }
 }
