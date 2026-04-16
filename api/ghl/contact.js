@@ -41,8 +41,13 @@ module.exports = async function handler(req, res) {
     if (!r.ok) return res.status(r.status).json({ error: 'Failed to fetch contact from GHL' });
     const data = await r.json();
     const c = data.contact || data;
+    const getCustomField = (id) => {
+      const fields = c.customFields || [];
+      const field = Array.isArray(fields) ? fields.find(f => f.id === id) : null;
+      return field?.value || '';
+    };
     console.log('Contact data keys:', Object.keys(c));
-    console.log('Contact data:', JSON.stringify(c).substring(0, 500));
+    console.log('Contact customFields:', JSON.stringify(c.customFields));
 
     // Map GHL fields to our schema
     const contact = {
@@ -50,18 +55,17 @@ module.exports = async function handler(req, res) {
       lastName: c.lastName,
       phone: c.phone,
       email: c.email,
-      jobTitle: c.jobTitle || c.customField?.job_title,
-      company: c.companyName || c.company,
-      // Custom fields — GHL returns them in customField object keyed by field key
-      golf_handicap_score_range: c.customField?.golf_handicap_score_range || '',
-      industry: c.customField?.industry || '',
-      if_other_please_specify_your_industry: c.customField?.if_other_please_specify_your_industry || '',
-      current_business_focus: c.customField?.current_business_focus || '',
-      if_other_please_specify_your_business_focus: c.customField?.if_other_please_specify_your_business_focus || '',
-      what_type_of_connection_would_be_most_valuable_to_you_right_now: c.customField?.what_type_of_connection_would_be_most_valuable_to_you_right_now || '',
-      are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: c.customField?.are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with || '',
-      what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: c.customField?.what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming || '',
-      are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: c.customField?.are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time || '',
+      jobTitle: getCustomField('fHdccyRA0BZvyw98iNYq'),
+      company: getCustomField('pEyjPQ34MBI1ERIwDTq6'),
+      golf_handicap_score_range: getCustomField('7X05SdowBrXCOAg23Baq'),
+      industry: getCustomField('ReLu70opgG0HY5Hp97wd'),
+      if_other_please_specify_your_industry: getCustomField(''),
+      current_business_focus: getCustomField('Tyjh4Qsr8nRfCawR0znk'),
+      if_other_please_specify_your_business_focus: getCustomField(''),
+      what_type_of_connection_would_be_most_valuable_to_you_right_now: getCustomField('RZ4OiRdekfTg2Ykd57v8'),
+      are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: getCustomField('Iy7cOl6YdNx3PdtUmEZv'),
+      what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: getCustomField('6PP2OEh4cKrTOKPt8H0e'),
+      are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: getCustomField('0HImqDCm9pTDRg5hRCeq'),
     };
 
     return res.status(200).json({ contact });
