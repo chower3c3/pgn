@@ -27,7 +27,7 @@ module.exports = async function handler(req, res) {
   );
   const subData = await subRes.json();
   const subs = subData.data || subData.subscriptions || subData.list || [];
-  const activeSub = subs.find(s => s.status === 'active');
+  const activeSub = subs.find(s => (s.status === 'active' || s.status === 'trialing') && s.liveMode === true);
 
   if (!activeSub) return res.status(404).json({ error: 'No active subscription found' });
 
