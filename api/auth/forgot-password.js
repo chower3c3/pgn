@@ -13,19 +13,20 @@ const supabase = createClient(
 
 async function isActiveMember(email) {
   const res = await fetch(
-    `https://services.leadconnectorhq.com/contacts/?locationId=${process.env.GHL_LOCATION_ID}&query=${encodeURIComponent(email)}`,
-    { headers: {
-      Authorization: `Bearer ${process.env.GHL_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Version': '2021-07-28',
-    }}
-  );
-  const data = await res.json();
-  const contacts = data.contacts || [];
-  if (!contacts.length) return false;
+      `https://services.leadconnectorhq.com/contacts/search/duplicate?locationId=${process.env.GHL_LOCATION_ID}&email=${encodeURIComponent(email)}`,
+      { headers: {
+        Authorization: `Bearer ${process.env.GHL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28',
+      }}
+    );
+    const data = await res.json();
+    const contact = data.contact || null;
+    if (!contact) return false;
+    const contactId = contact.id;
 
   const subRes = await fetch(
-    `https://services.leadconnectorhq.com/payments/subscriptions?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contacts[0].id}`,
+    `https://services.leadconnectorhq.com/payments/subscriptions?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contactId}`,
     { headers: {
       Authorization: `Bearer ${process.env.GHL_API_KEY}`,
       'Content-Type': 'application/json',
