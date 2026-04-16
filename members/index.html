@@ -845,6 +845,7 @@ async function loadMembers() {
 }
 
 function renderMembers(members) {
+  console.log('renderMembers called, count:', members.length);
   document.getElementById('membersLoading').style.display = 'none';
   document.getElementById('membersTable').style.display = 'table';
   document.getElementById('membersCount').textContent = `${members.length} active member${members.length !== 1 ? 's' : ''}`;
