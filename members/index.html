@@ -827,7 +827,7 @@ async function saveProfile() {
 
 // ── MEMBERS DIRECTORY ──
 async function loadMembers() {
-  if (allMembers.length) return; // cached
+  async function loadMembers() {
   document.getElementById('membersLoading').style.display = 'flex';
   document.getElementById('membersTable').style.display = 'none';
 
