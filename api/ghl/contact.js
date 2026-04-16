@@ -4,7 +4,7 @@
 
 const { verifyToken } = require('../_middleware/auth');
 
-const GHL_BASE = 'https://rest.gohighlevel.com/v1';
+const GHL_BASE = 'https://services.leadconnectorhq.com';
 
 const EDITABLE_FIELDS = [
   'phone',
