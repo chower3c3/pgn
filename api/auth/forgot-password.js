@@ -13,20 +13,28 @@ const supabase = createClient(
 
 async function isActiveMember(email) {
   const res = await fetch(
-    `https://rest.gohighlevel.com/v1/contacts/search?email=${encodeURIComponent(email)}`,
-    { headers: { Authorization: `Bearer ${process.env.GHL_API_KEY}` } }
+    `https://services.leadconnectorhq.com/contacts/?locationId=${process.env.GHL_LOCATION_ID}&query=${encodeURIComponent(email)}`,
+    { headers: {
+      Authorization: `Bearer ${process.env.GHL_API_KEY}`,
+      'Content-Type': 'application/json',
+      'Version': '2021-07-28',
+    }}
   );
   const data = await res.json();
   const contacts = data.contacts || [];
   if (!contacts.length) return false;
 
   const subRes = await fetch(
-    `https://rest.gohighlevel.com/v1/payments/subscriptions?locationId=${process.env.GHL_LOCATION_ID}&contactId=${contacts[0].id}`,
-    { headers: { Authorization: `Bearer ${process.env.GHL_API_KEY}` } }
+    `https://services.leadconnectorhq.com/payments/subscriptions?altId=${process.env.GHL_LOCATION_ID}&altType=location&contactId=${contacts[0].id}`,
+    { headers: {
+      Authorization: `Bearer ${process.env.GHL_API_KEY}`,
+      'Content-Type': 'application/json',
+      'Version': '2021-07-28',
+    }}
   );
   const subData = await subRes.json();
-  const subs = subData.subscriptions || subData.list || [];
-  return subs.some(s => s.status === 'active' || s.status === 'trialing');
+  const subs = subData.data || subData.subscriptions || [];
+  return subs.some(s => (s.status === 'active' || s.status === 'trialing') && s.liveMode === true);
 }
 
 module.exports = async function handler(req, res) {
