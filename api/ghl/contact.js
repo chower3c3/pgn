@@ -77,25 +77,37 @@ module.exports = async function handler(req, res) {
 
     // Whitelist — only allow editable fields
     const filtered = {};
-    const customFields = {};
-
-    for (const key of Object.keys(updates)) {
-      if (!EDITABLE_FIELDS.includes(key)) continue;
-
-      // Standard GHL contact fields
-      if (['phone', 'email', 'jobTitle', 'company'].includes(key)) {
-        if (key === 'company') filtered.companyName = updates[key];
-        else filtered[key] = updates[key];
-      } else {
-        // Custom fields
-        customFields[key] = updates[key];
-      }
-    }
-
-    const payload = { ...filtered };
-    if (Object.keys(customFields).length) {
-      payload.customField = customFields;
-    }
+        const customFields = {};
+    
+        const fieldKeyToId = {
+          golf_handicap_score_range: '7X05SdowBrXCOAg23Baq',
+          industry: 'ReLu70opgG0HY5Hp97wd',
+          if_other_please_specify_your_industry: 'WK4jmgZXLsR6KcTyxeQl',
+          current_business_focus: 'Tyjh4Qsr8nRfCawR0znk',
+          if_other_please_specify_your_business_focus: 'lHJ9mzFVcrnFIa7pKHJc',
+          what_type_of_connection_would_be_most_valuable_to_you_right_now: 'RZ4OiRdekfTg2Ykd57v8',
+          are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: 'Iy7cOl6YdNx3PdtUmEZv',
+          what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: '6PP2OEh4cKrTOKPt8H0e',
+          are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: '0HImqDCm9pTDRg5hRCeq',
+        };
+    
+        for (const key of Object.keys(updates)) {
+          if (!EDITABLE_FIELDS.includes(key)) continue;
+    
+          if (key === 'phone') filtered.phone = updates[key];
+          else if (key === 'email') filtered.email = updates[key];
+          else if (key === 'jobTitle') filtered.jobTitle = updates[key];
+          else if (key === 'company') filtered.companyName = updates[key];
+          else {
+            const fieldId = fieldKeyToId[key];
+            if (fieldId) customFields[fieldId] = updates[key];
+          }
+        }
+    
+        const payload = { ...filtered };
+        if (Object.keys(customFields).length) {
+          payload.customFields = Object.entries(customFields).map(([id, value]) => ({ id, value }));
+        }
 
     const r = await fetch(`${GHL_BASE}/contacts/${contactId}`, {
       method: 'PUT',
