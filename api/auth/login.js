@@ -15,20 +15,19 @@ const supabase = createClient(
 async function checkGHLActiveStatus(email) {
   // Search contacts by email in GHL
   const contactRes = await fetch(
-    `https://services.leadconnectorhq.com/contacts/?locationId=${process.env.GHL_LOCATION_ID}&email=${encodeURIComponent(email)}`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.GHL_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Version': '2021-07-28',
-      },
-    }
-  );
-  const contactData = await contactRes.json();
-  const contacts = contactData.contacts || [];
-  if (!contacts.length) return { active: false, contact: null, subscriptionType: null };
-
-  const contact = contacts[0];
+      `https://services.leadconnectorhq.com/contacts/search/duplicate?locationId=${process.env.GHL_LOCATION_ID}&email=${encodeURIComponent(email)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GHL_API_KEY}`,
+          'Content-Type': 'application/json',
+          'Version': '2021-07-28',
+        },
+      }
+    );
+    const contactData = await contactRes.json();
+    const contact = contactData.contact || null;
+    if (!contact) return { active: false, contact: null, subscriptionType: null };
+    const contacts = [contact];
 
   // Check subscriptions for this contact
   const subRes = await fetch(
@@ -37,13 +36,14 @@ async function checkGHLActiveStatus(email) {
       headers: {
         Authorization: `Bearer ${process.env.GHL_API_KEY}`,
         'Content-Type': 'application/json',
+        'Version': '2021-07-28',
       },
     }
   );
   const subData = await subRes.json();
   const subscriptions = subData.data || subData.subscriptions || subData.list || [];
 
-  const activeSub = subscriptions.find(s => s.status === 'active' || s.status === 'trialing');
+  const activeSub = subscriptions.find(s => (s.status === 'active' || s.status === 'trialing') && s.liveMode === true);
   if (!activeSub) return { active: false, contact, subscriptionType: null };
 
   // Determine subscription type from product name
