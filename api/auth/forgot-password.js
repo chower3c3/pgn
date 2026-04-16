@@ -40,14 +40,43 @@ module.exports = async function handler(req, res) {
   // Always return success to prevent email enumeration
   const successMsg = { success: true, message: 'If an active account exists for that email, a reset link has been sent.' };
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', normalizedEmail)
-    .single();
+  let { data: user } = await supabase
+  .from('users')
+  .select('*')
+  .eq('email', normalizedEmail)
+  .maybeSingle();
 
+  // If user doesn't exist yet but is an active/trialing member, create their record
+  if (!user) {
+    // Look up their GHL contact ID first
+    const contactRes = await fetch(
+      `https://services.leadconnectorhq.com/contacts/?locationId=${process.env.GHL_LOCATION_ID}&email=${encodeURIComponent(normalizedEmail)}`,
+      { headers: { 
+        Authorization: `Bearer ${process.env.GHL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Version': '2021-07-28',
+      }}
+    );
+    const contactData = await contactRes.json();
+    const contacts = contactData.contacts || [];
+    if (!contacts.length) return res.status(200).json(successMsg);
+    
+    const { error: insertError } = await supabase.from('users').insert({
+      email: normalizedEmail,
+      ghl_contact_id: contacts[0].id,
+    });
+    if (insertError) return res.status(200).json(successMsg);
+  
+    // Re-fetch the newly created user
+    const { data: newUser } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', normalizedEmail)
+      .maybeSingle();
+    user = newUser;
+  }
+  
   if (!user) return res.status(200).json(successMsg);
-
   const active = normalizedEmail === process.env.ADMIN_EMAIL?.toLowerCase()
     ? true
     : await isActiveMember(normalizedEmail);
