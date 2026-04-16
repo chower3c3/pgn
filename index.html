@@ -456,7 +456,7 @@ function Nav({scrolled}){
         </a>
         <ul className="nav-links">{links.map(([h,l])=><li key={h}><a href={h}>{l}</a></li>)}</ul>
         <div className="nav-actions">
-          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer">Member Login</a>
+          <a href="https://pittsburghgolfnetwork.com/members" className="btn-ghost" target="_blank" rel="noreferrer">Member Login</a>
           <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer">Apply Now</a>
         </div>
         <button className={"nav-hamburger"+(open?" open":"")} onClick={()=>setOpen(o=>!o)} aria-label="Menu">
@@ -466,7 +466,7 @@ function Nav({scrolled}){
       <div className={"mobile-menu"+(open?" open":"")}>
         {links.map(([h,l])=><a key={h} href={h} onClick={close}>{l}</a>)}
         <div className="mobile-menu-ctas">
-          <a href="https://members.pittsburghgolfnetwork.com" className="btn-ghost" target="_blank" rel="noreferrer" onClick={close}>Member Login</a>
+          <a href="https://pittsburghgolfnetwork.com/members" className="btn-ghost" target="_blank" rel="noreferrer" onClick={close}>Member Login</a>
           <a href="https://signup.pittsburghgolfnetwork.com" className="btn-gold" target="_blank" rel="noreferrer" onClick={close}>Apply Now</a>
         </div>
       </div>
@@ -895,7 +895,7 @@ function ContactSection(){
         </div>
         <div className="cg reveal" ref={rG}>
           <div className="citems">
-            {[{ic:"i-mail",label:"Email",c:<><a href="mailto:golf@pittsburghgolfnetwork.com">golf@pittsburghgolfnetwork.com</a></>},{ic:"i-pin",label:"Based In",c:<>Pittsburgh, Pennsylvania<br/>Serving the greater Pittsburgh metro area</>},{ic:"i-cal",label:"Season",c:<>April through October on the course, with simulator outings and events continuing through the winter months.</>},{ic:"i-link",label:"Quick Links",c:<><a href="https://signup.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Apply for Membership</a><br/><a href="https://sponsors.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Become a Sponsor</a><br/><a href="https://members.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Member Login</a></>}].map(ci=>(
+            {[{ic:"i-mail",label:"Email",c:<><a href="mailto:golf@pittsburghgolfnetwork.com">golf@pittsburghgolfnetwork.com</a></>},{ic:"i-pin",label:"Based In",c:<>Pittsburgh, Pennsylvania<br/>Serving the greater Pittsburgh metro area</>},{ic:"i-cal",label:"Season",c:<>April through October on the course, with simulator outings and events continuing through the winter months.</>},{ic:"i-link",label:"Quick Links",c:<><a href="https://signup.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Apply for Membership</a><br/><a href="https://sponsors.pittsburghgolfnetwork.com" target="_blank" rel="noreferrer">Become a Sponsor</a><br/><a href="https://pittsburghgolfnetwork.com/members" target="_blank" rel="noreferrer">Member Login</a></>}].map(ci=>(
               <div className="ci" key={ci.label}>
                 <div className="ci-ico"><I id={ci.ic}/></div>
                 <div><h4>{ci.label}</h4><p>{ci.c}</p></div>
@@ -924,7 +924,7 @@ function ContactSection(){
 }
 
 function Footer(){
-  const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://members.pittsburghgolfnetwork.com"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
+  const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://pittsburghgolfnetwork.com/members"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
   return(
     <footer className="footer">
       <div className="sw">
