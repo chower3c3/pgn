@@ -237,7 +237,6 @@
     @media (max-width:600px) {
       .portal-nav-user{display:none;}
       .panel-title{font-size:20px;}
-      .members-table th:nth-child(5),.members-table td:nth-child(5){display:none;}
       .event-date-block{display:none;}
     }
   </style>
@@ -465,6 +464,7 @@
           </div>
           <div class="members-count" id="membersCount"></div>
           <div id="membersLoading" class="loading"><div class="spinner"></div> Loading members…</div>
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
           <table class="members-table" id="membersTable" style="display:none;">
             <thead>
               <tr>
@@ -477,6 +477,7 @@
             </thead>
             <tbody id="membersBody"></tbody>
           </table>
+        </div>
         </div>
       </div>
 
