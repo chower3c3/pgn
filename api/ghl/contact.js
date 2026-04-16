@@ -41,6 +41,8 @@ module.exports = async function handler(req, res) {
     if (!r.ok) return res.status(r.status).json({ error: 'Failed to fetch contact from GHL' });
     const data = await r.json();
     const c = data.contact || data;
+    console.log('Contact data keys:', Object.keys(c));
+    console.log('Contact data:', JSON.stringify(c).substring(0, 500));
 
     // Map GHL fields to our schema
     const contact = {
