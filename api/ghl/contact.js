@@ -96,7 +96,7 @@ module.exports = async function handler(req, res) {
     
           if (key === 'phone') filtered.phone = updates[key];
           else if (key === 'email') filtered.email = updates[key];
-          else if (key === 'jobTitle') filtered.jobTitle = updates[key];
+          else if (key === 'jobTitle') filtered.job_title = updates[key];
           else if (key === 'company') filtered.companyName = updates[key];
           else {
             const fieldId = fieldKeyToId[key];
