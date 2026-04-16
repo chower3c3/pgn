@@ -1128,6 +1128,7 @@ function closeDeleteModal() {
 
 // ── TAB SWITCHING ──
 function switchTab(tabId, el) {
+  console.log('switchTab called:', tabId);
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + tabId).classList.add('active');
