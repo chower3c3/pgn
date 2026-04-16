@@ -116,8 +116,9 @@ module.exports = async function handler(req, res) {
     });
 
     if (!r.ok) {
-      const errData = await r.json().catch(() => ({}));
-      return res.status(r.status).json({ error: 'Failed to update contact in GHL', details: errData });
+      const errText = await r.text().catch(() => '');
+      console.log('GHL update error:', errText);
+      return res.status(r.status).json({ error: 'Failed to update contact in GHL', details: errText });
     }
 
     return res.status(200).json({ success: true });
