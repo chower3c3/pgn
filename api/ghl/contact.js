@@ -65,7 +65,7 @@ module.exports = async function handler(req, res) {
       what_type_of_connection_would_be_most_valuable_to_you_right_now: getCustomField('RZ4OiRdekfTg2Ykd57v8'),
       are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: getCustomField('Iy7cOl6YdNx3PdtUmEZv'),
       what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: getCustomField('6PP2OEh4cKrTOKPt8H0e'),
-      are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: getCustomField('0HImqDCm9pTDRg5hRCeq'),
+      are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: getCustomField('WB5qVqjgXgmwkp42ESJB'),
     };
 
     return res.status(200).json({ contact });
@@ -88,7 +88,7 @@ module.exports = async function handler(req, res) {
           what_type_of_connection_would_be_most_valuable_to_you_right_now: 'RZ4OiRdekfTg2Ykd57v8',
           are_there_any_specific_industries_or_roles_youd_love_to_be_paired_with: 'Iy7cOl6YdNx3PdtUmEZv',
           what_is_your_biggest_current_business_challenge_and_which_industry_or_professional_role_would_you_most_like_to_connect_with_for_advice_brainstorming: '6PP2OEh4cKrTOKPt8H0e',
-          are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: '0HImqDCm9pTDRg5hRCeq',
+          are_there_any_specific_pgn_members_you_would_like_to_reconnect_with_or_meet_for_the_first_time: 'WB5qVqjgXgmwkp42ESJB',
         };
     
         for (const key of Object.keys(updates)) {
