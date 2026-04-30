@@ -559,6 +559,12 @@ function PricingSection(){
           <div><strong>Referral Program</strong><p>When you refer a new member by name, both of you receive your next monthly event at no charge. Play great golf, grow the network, and everyone benefits.</p></div>
         </div>
       </div>
+	  <div style={{maxWidth:"880px",margin:"16px auto 0",textAlign:"center"}}>
+  <p style={{fontSize:"13px",color:"var(--text-light)",fontWeight:300,marginBottom:"12px"}}>Not quite ready to join? No problem. Stay in the loop on events and updates until the time is right.</p>
+  <a href="#mailing-list" style={{fontSize:"10.5px",fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"var(--gold-dim)",borderBottom:"1.5px solid var(--gold-dim)",paddingBottom:"2px",transition:"color 0.2s"}} onMouseEnter={e=>{e.target.style.color="var(--gold)";e.target.style.borderColor="var(--gold)";}} onMouseLeave={e=>{e.target.style.color="var(--gold-dim)";e.target.style.borderColor="var(--gold-dim)";}}>
+    Stay Connected →
+  	  	</a>
+	  </div>
     </section>
   );
 }
@@ -955,7 +961,7 @@ function MailingListSection(){
   };
 
   return(
-    <section style={{background:"var(--cream)",padding:"80px 0",borderTop:"1px solid var(--border)"}}>
+    <section id="mailing-list" style={{background:"var(--cream)",padding:"80px 0",borderTop:"1px solid var(--border)"}}>
       <div className="sw">
         <div className="reveal" ref={rH} style={{marginBottom:0,textAlign:"center"}}>
           <div className="eyebrow">Stay in the Loop</div>
