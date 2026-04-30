@@ -671,7 +671,7 @@ function CoursesSection(){
 
 function CalendarSection(){
   const[year,setYear]=useState(2026);
-  const[mo,setMo]=useState(3);
+  const[mo,setMo]=useState(4);
   const rH=useReveal(),rC=useReveal();
   const change=d=>{let m=mo+d,y=year;if(m>11){m=0;y++;}if(m<0){m=11;y--;}setMo(m);setYear(y);};
   const key=`${year}-${String(mo+1).padStart(2,"0")}`;
