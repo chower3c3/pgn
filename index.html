@@ -957,24 +957,24 @@ function MailingListSection(){
   return(
     <section style={{background:"var(--cream)",padding:"80px 0",borderTop:"1px solid var(--border)"}}>
       <div className="sw">
-        <div className="sh reveal" ref={rH} style={{marginBottom:0}}>
+        <div className="reveal" ref={rH} style={{marginBottom:0,textAlign:"center"}}>
           <div className="eyebrow">Stay in the Loop</div>
           <h2 className="st">Not Ready to Commit? No Problem.</h2>
           <p className="ss" style={{fontFamily:"'Libre Baskerville',serif",fontStyle:"italic",fontSize:"16px",color:"var(--text-mid)",marginBottom:"12px"}}>Stay connected until the time is right.</p>
-          <p className="ss" style={{marginBottom:"32px"}}>The PGN season fills up fast and the network keeps growing. Drop your email below and we'll keep you in the loop on upcoming events, course announcements, and what's happening inside Pittsburgh's premier professional golf community. No pressure, no hard sell — just the good stuff.</p>
+          <p className="ss" style={{marginBottom:"32px"}}>The PGN season fills up fast and the network keeps growing. Drop your email below and we'll keep you in the loop on upcoming events, course announcements, and what's happening inside Pittsburgh's premier professional golf community.</p>
           <form onSubmit={handleSubmit} style={{maxWidth:"480px",margin:"0 auto",display:"flex",flexDirection:"column",gap:"12px"}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
               <div className="fg">
-                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>First Name</label>
+                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block",textAlign:"left"}}>First Name</label>
                 <input ref={firstRef} type="text" placeholder="John" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
               </div>
               <div className="fg">
-                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>Last Name</label>
+                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block",textAlign:"left"}}>Last Name</label>
                 <input ref={lastRef} type="text" placeholder="Smith" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
               </div>
             </div>
             <div className="fg">
-              <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>Email Address</label>
+              <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block",textAlign:"left"}}>Email Address</label>
               <input ref={emailRef} type="email" placeholder="john@company.com" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
             </div>
             {error&&<p style={{fontSize:"13px",color:"#c0392b",fontWeight:400,textAlign:"center"}}>Something went wrong. Please try again.</p>}
