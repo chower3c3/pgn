@@ -920,6 +920,74 @@ function ContactSection(){
   );
 }
 
+function MailingListSection(){
+  const[sent,setSent]=useState(false);
+  const[error,setError]=useState(false);
+  const[loading,setLoading]=useState(false);
+  const firstRef=useRef(null),lastRef=useRef(null),emailRef=useRef(null);
+  const rH=useReveal();
+
+  const GHL_WEBHOOK="https://services.leadconnectorhq.com/hooks/o3gJLGbebcAizoBE8JHb/webhook-trigger/b483fc9a-404f-430f-b1ea-6cc0fc235ef5";
+
+  const handleSubmit=async e=>{
+    e.preventDefault();
+    setLoading(true);
+    setError(false);
+    const payload={
+      firstName:firstRef.current.value,
+      lastName:lastRef.current.value,
+      email:emailRef.current.value,
+      source:"pittsburghgolfnetwork.com mailing list signup",
+    };
+    try{
+      await fetch(GHL_WEBHOOK,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload),
+      });
+      setSent(true);
+      e.target.reset();
+    }catch(err){
+      setError(true);
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  return(
+    <section style={{background:"var(--cream)",padding:"80px 0",borderTop:"1px solid var(--border)"}}>
+      <div className="sw">
+        <div className="sh reveal" ref={rH} style={{marginBottom:0}}>
+          <div className="eyebrow">Stay in the Loop</div>
+          <h2 className="st">Not Ready to Commit? No Problem.</h2>
+          <p className="ss" style={{fontFamily:"'Libre Baskerville',serif",fontStyle:"italic",fontSize:"16px",color:"var(--text-mid)",marginBottom:"12px"}}>Stay connected until the time is right.</p>
+          <p className="ss" style={{marginBottom:"32px"}}>The PGN season fills up fast and the network keeps growing. Drop your email below and we'll keep you in the loop on upcoming events, course announcements, and what's happening inside Pittsburgh's premier professional golf community. No pressure, no hard sell — just the good stuff.</p>
+          <form onSubmit={handleSubmit} style={{maxWidth:"480px",margin:"0 auto",display:"flex",flexDirection:"column",gap:"12px"}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
+              <div className="fg">
+                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>First Name</label>
+                <input ref={firstRef} type="text" placeholder="John" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
+              </div>
+              <div className="fg">
+                <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>Last Name</label>
+                <input ref={lastRef} type="text" placeholder="Smith" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
+              </div>
+            </div>
+            <div className="fg">
+              <label style={{fontSize:"9.5px",fontWeight:700,letterSpacing:"0.14em",textTransform:"uppercase",color:"var(--text-light)",marginBottom:"6px",display:"block"}}>Email Address</label>
+              <input ref={emailRef} type="email" placeholder="john@company.com" required style={{background:"white",border:"1.5px solid var(--border)",borderRadius:"3px",padding:"11px 13px",fontSize:"13px",color:"var(--text)",fontFamily:"'Montserrat',sans-serif",fontWeight:300,outline:"none",width:"100%",transition:"border-color 0.2s"}} onFocus={e=>e.target.style.borderColor="var(--gold)"} onBlur={e=>e.target.style.borderColor="var(--border)"}/>
+            </div>
+            {error&&<p style={{fontSize:"13px",color:"#c0392b",fontWeight:400,textAlign:"center"}}>Something went wrong. Please try again.</p>}
+            <button type="submit" className="btn-sub" disabled={loading} style={{background:sent?"var(--green-accent)":"var(--gold)",color:"white",border:"none",padding:"14px 26px",fontSize:"11.5px",fontWeight:700,letterSpacing:"0.13em",textTransform:"uppercase",borderRadius:"var(--radius-sm)",transition:"all 0.22s",fontFamily:"'Montserrat',sans-serif",cursor:"pointer",width:"100%"}}>
+              {loading?"Submitting...":sent?"You're on the List ✓":"Keep Me Posted"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
+}
+	  
 function Footer(){
   const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://pittsburghgolfnetwork.com/members"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
   return(
@@ -1372,7 +1440,8 @@ function App(){
       <PartnersSection/>
       <BlogSection/>
       <ContactSection/>
-      <Footer/>
+      <MailingListSection/>
+	  <Footer/>
     </>
   );
 }
