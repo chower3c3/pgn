@@ -20,6 +20,80 @@
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-WK7R7BR5');</script>
   <!-- End Google Tag Manager -->
+<!-- UTM Parameter Persistence -->
+<script>
+  (function() {
+    const UTM_PARAMS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+
+    // Read UTMs from the current URL
+    function getUTMs() {
+      const params = new URLSearchParams(window.location.search);
+      const utms = {};
+      UTM_PARAMS.forEach(function(key) {
+        if (params.get(key)) utms[key] = params.get(key);
+      });
+      return utms;
+    }
+
+    // Save to sessionStorage so they persist across page loads
+    function saveUTMs(utms) {
+      if (Object.keys(utms).length > 0) {
+        sessionStorage.setItem('pgn_utms', JSON.stringify(utms));
+      }
+    }
+
+    // Retrieve stored UTMs (falls back to current URL's UTMs)
+    function loadUTMs() {
+      try {
+        return JSON.parse(sessionStorage.getItem('pgn_utms') || '{}');
+      } catch(e) { return {}; }
+    }
+
+    // Append UTMs to a link's href
+    function appendUTMs(href, utms) {
+      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) return href;
+      try {
+        const url = new URL(href, window.location.origin);
+        // Only append to same-origin or known external links (skip CDN/font/asset URLs)
+        Object.keys(utms).forEach(function(key) {
+          if (!url.searchParams.get(key)) {
+            url.searchParams.set(key, utms[key]);
+          }
+        });
+        return url.toString();
+      } catch(e) { return href; }
+    }
+
+    // Attach UTMs to all qualifying links on the page
+    function updateLinks(utms) {
+      if (Object.keys(utms).length === 0) return;
+      document.querySelectorAll('a[href]').forEach(function(link) {
+        link.href = appendUTMs(link.getAttribute('href'), utms);
+      });
+    }
+
+    // Run on load, then watch for React re-renders adding new links
+    function init() {
+      const currentUTMs = getUTMs();
+      if (Object.keys(currentUTMs).length > 0) saveUTMs(currentUTMs);
+      const utms = loadUTMs();
+      updateLinks(utms);
+
+      // MutationObserver catches links added dynamically by React
+      const observer = new MutationObserver(function() {
+        updateLinks(utms);
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+<!-- End UTM Parameter Persistence -->
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
