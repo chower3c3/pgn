@@ -201,7 +201,7 @@ const CSS = `
   .promo-bar strong{display:block;font-size:14px;font-weight:700;color:var(--green);margin-bottom:3px;}
   .promo-bar span{font-size:12.5px;color:var(--text-mid);font-weight:300;}
   .promo-pill{font-size:9.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;background:var(--gold);color:white;padding:7px 16px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
-  .pg{max-width:880px;margin:0 auto 36px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
+  .pg{max-width:1160px;margin:0 auto 36px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:start;}
   .pc{background:white;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;}
   .pc:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
   .pc.top{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow-md);transform:scale(1.022);}
@@ -225,6 +225,11 @@ const CSS = `
   .btn-pc:hover{background:var(--green);color:white;}
   .btn-pc.gld{background:var(--gold);color:white;border-color:var(--gold);}
   .btn-pc.gld:hover{background:var(--gold-light);border-color:var(--gold-light);}
+  .try-divider{position:relative;}
+  .try-divider::before{content:'';position:absolute;left:-10px;top:0;bottom:0;width:1px;background:var(--border);}
+  .pc.try .pc-h{background:linear-gradient(160deg,#2a2a2a 0%,#1a1a1a 100%);}
+  .pc-not-ready{font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-light);text-align:center;margin-bottom:8px;}
+  .pc-credit{font-size:11px;color:var(--green-accent);font-weight:600;text-align:center;margin-bottom:16px;line-height:1.5;}
   .ref-strip{max-width:880px;margin:0 auto;background:var(--green-pale);border:1px solid rgba(42,102,64,0.15);border-radius:var(--radius);padding:20px 28px;display:flex;align-items:flex-start;gap:14px;}
   .ref-strip svg{width:24px;height:24px;fill:var(--green-accent);flex-shrink:0;margin-top:2px;}
   .ref-strip strong{display:block;font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;}
@@ -447,6 +452,8 @@ const CSS = `
     .cc{min-width:calc(100vw - 48px);max-width:calc(100vw - 48px);scroll-snap-align:start;}
     .cal-cell{min-height:56px;}
     .cal-dot{display:none;}
+    .try-divider::before{display:none;}
+    .pc-not-ready{display:none;}
   }
 `;
 
@@ -673,6 +680,25 @@ function PricingSection(){
               </div>
             </div>
           ))}
+			<div className="try-divider">
+            <div className="pc try" style={{width:"100%"}}>
+              <div className="pc-not-ready">Not ready to commit?</div>
+              <div className="pc-h">
+                <div className="pc-tier">Try PGN</div>
+                <div className="pc-amt-row"><span className="pc-cur">$</span><span className="pc-amt">225</span><span className="pc-per">/event</span></div>
+                <div className="pc-was">Regular: $300</div>
+                <div className="pc-save"></div>
+              </div>
+              <div className="pc-b">
+                <p className="pc-desc">Experience one PGN event before committing to a membership.</p>
+                <div className="pc-credit">✦ Applicable in full toward a membership if you join within 30 days</div>
+                <ul className="pc-feats">
+                  {["One twilight or 18-hole event","Curated foursome matching","Access to post-round networking","No recurring commitment"].map(f=><li key={f}><I id="i-check"/>{f}</li>)}
+                </ul>
+                <a href="https://signup.pittsburghgolfnetwork.com" className="btn-pc" target="_blank" rel="noreferrer">Apply Now</a>
+              </div>
+            </div>
+          </div>
         </div>
 		<CorporateUpgrade/>  
         <div className="ref-strip reveal" ref={rR}>
