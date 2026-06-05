@@ -230,6 +230,21 @@ const CSS = `
   .ref-strip strong{display:block;font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;}
   .ref-strip p{font-size:12.5px;color:var(--text-mid);line-height:1.65;font-weight:300;}
 
+  .corp-upgrade{max-width:880px;margin:0 auto 28px;background:linear-gradient(135deg,#081610 0%,#0E2B1A 60%,#122A1C 100%);border:1px solid var(--gold);border-radius:var(--radius);overflow:hidden;position:relative;}
+  .corp-upgrade::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%);pointer-events:none;}
+  .corp-upgrade::after{content:'';position:absolute;bottom:-60px;left:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(42,102,64,0.18) 0%,transparent 70%);pointer-events:none;}
+  .corp-badge{background:var(--gold);color:white;font-size:8.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;text-align:center;padding:7px;position:relative;z-index:1;}
+  .corp-inner{padding:32px 40px 36px;position:relative;z-index:1;display:flex;flex-direction:column;gap:24px;}
+  .corp-eyebrow{font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+  .corp-title{font-size:22px;font-weight:900;color:white;line-height:1.1;letter-spacing:-0.02em;text-transform:uppercase;margin-bottom:8px;}
+  .corp-sub{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.55);font-weight:300;margin-bottom:22px;}
+  .corp-perks{display:flex;flex-direction:column;gap:9px;}
+  .corp-perk{display:flex;align-items:flex-start;gap:10px;font-size:12.5px;color:rgba(255,255,255,0.75);font-weight:400;line-height:1.45;}
+  .corp-perk svg{width:14px;height:14px;fill:var(--gold-light);flex-shrink:0;margin-top:2px;}
+  .corp-cta{display:flex;justify-content:center;padding-top:8px;}
+  .btn-corp{display:inline-block;padding:12px 36px;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;border-radius:var(--radius-sm);background:var(--gold);color:white;border:none;transition:all 0.22s;}
+  .btn-corp:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,0.35);}
+
   .roi-s{padding:100px 0;background:linear-gradient(170deg,var(--green) 0%,#122A1C 100%);position:relative;overflow:hidden;}
   .roi-s::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 85% 20%,rgba(201,168,76,0.05) 0%,transparent 60%);pointer-events:none;}
   .roi-g{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
@@ -586,6 +601,38 @@ function ValueSection(){
   );
 }
 
+function CorporateUpgrade(){
+  const rCU=useReveal();
+  const perks=[
+    "Send a verified substitute from your organization to any event you can't attend",
+    "Protect your seat — your company's network presence is never lost to a scheduling conflict",
+    "Ideal for members with demanding travel schedules, multi-location organizations, and company-paid memberships",
+    "Upgrade any individual membership at any time",
+  ];
+  return(
+    <div className="corp-upgrade reveal" ref={rCU}>
+      <div className="corp-badge">Add-On Upgrade Available — Corporate Membership</div>
+      <div className="corp-inner">
+        <div>
+          <div className="corp-eyebrow">Corporate Upgrade</div>
+          <div className="corp-title">Can't Make It?<br/>Send Your Team.</div>
+          <p className="corp-sub">Upgrade any membership to Corporate status and give your organization a standing seat at every PGN event, even when you can't be there yourself.</p>
+          <div className="corp-perks">
+            {perks.map(p=>(
+              <div className="corp-perk" key={p}>
+                <svg viewBox="0 0 24 24"><use href="#i-check"/></svg>{p}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="corp-cta">
+          <a href="https://signup.pittsburghgolfnetwork.com/corporate" className="btn-corp" target="_blank" rel="noreferrer">Learn More</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+	  
 function PricingSection(){
   const rH=useReveal(),rM=useReveal(),rP=useReveal(),rC=useReveal(),rR=useReveal();
   const plans=[
@@ -627,6 +674,7 @@ function PricingSection(){
             </div>
           ))}
         </div>
+		<CorporateUpgrade/>  
         <div className="ref-strip reveal" ref={rR}>
           <I id="i-gift"/>
           <div><strong>Referral Program</strong><p>When you refer a new member by name, both of you receive your next monthly event at no charge. Play great golf, grow the network, and everyone benefits.</p></div>
