@@ -425,6 +425,10 @@ const CSS = `
   .fb-name{font-size:13.5px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
   .fb-tag{font-size:8.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:14px;}
   .fb-desc{font-size:12.5px;color:rgba(255,255,255,0.32);line-height:1.75;font-weight:300;}
+  .fsocial{display:flex;gap:10px;margin-top:16px;}
+  .fsocial a{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+  .fsocial a:hover{background:rgba(201,168,76,0.15);}
+  .fsocial svg{width:15px;height:15px;fill:var(--gold-light);}
   .fc h5{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:15px;}
   .fc ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
   .fc ul a{font-size:12.5px;color:rgba(255,255,255,0.37);font-weight:300;transition:color 0.2s;}
@@ -1148,7 +1152,11 @@ function Footer(){
     <footer className="footer">
       <div className="sw">
         <div className="ft">
-          <div className="fb"><div className="fb-name">Pittsburgh Golf Network</div><div className="fb-tag">The Links Between Pittsburgh's Best Professionals</div><div className="fb-desc">An application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors.</div></div>
+          <div className="fb"><div className="fb-name">Pittsburgh Golf Network</div><div className="fb-tag">The Links Between Pittsburgh's Best Professionals</div><div className="fb-desc">An application-only golf and business networking membership for Pittsburgh entrepreneurs, executives, and investors.</div><div className="fsocial">
+             <a href="https://www.facebook.com/people/Pittsburgh-Golf-Network/61575399457307/" target="_blank" rel="noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24"><use href="#i-facebook"/></svg></a>
+             <a href="https://www.instagram.com/pittsburghgolfnetwork/" target="_blank" rel="noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24"><use href="#i-instagram"/></svg></a>
+             <a href="https://www.linkedin.com/company/pittsburgh-golf-network" target="_blank" rel="noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><use href="#i-linkedin"/></svg></a>
+             </div></div>
           {cols.map(col=>(
             <div className="fc" key={col.h}><h5>{col.h}</h5><ul>{col.links.map(([l,h])=><li key={l}><a href={h} target={h.startsWith("http")?"_blank":undefined} rel="noreferrer">{l}</a></li>)}</ul></div>
           ))}
@@ -1187,7 +1195,10 @@ function IconDefs(){
       <symbol id="i-network" viewBox="0 0 24 24"><path d="M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zM7 12c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zM12 2C9.24 2 7 4.24 7 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></symbol>
       <symbol id="i-golfball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm0 1.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15zm-1 3.5h2v1.5h1.5v2H13V13h-2v-1.5H9.5v-2H11V8z" fill="none"/><circle cx="12" cy="12" r="7.5"/><circle cx="10" cy="9" r="0.8" fill="white"/><circle cx="14" cy="9" r="0.8" fill="white"/><circle cx="9" cy="12" r="0.8" fill="white"/><circle cx="12" cy="11" r="0.8" fill="white"/><circle cx="15" cy="12" r="0.8" fill="white"/><circle cx="10.5" cy="14.5" r="0.8" fill="white"/><circle cx="13.5" cy="14.5" r="0.8" fill="white"/></symbol>
       <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
-    </svg>
+      <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.5 9.95v-7.04H7.9V12h2.6V9.8c0-2.6 1.55-4.03 3.9-4.03 1.13 0 2.32.2 2.32.2v2.55h-1.3c-1.28 0-1.68.8-1.68 1.62V12h2.86l-.46 2.91h-2.4v7.04A10 10 0 0 0 22 12z"/></symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24"><path d="M12 2c-2.72 0-3.06.01-4.12.06-1.06.05-1.79.22-2.43.47-.66.26-1.22.6-1.77 1.16-.56.55-.9 1.11-1.16 1.77-.25.64-.42 1.37-.47 2.43C2 8.94 2 9.28 2 12s.01 3.06.06 4.12c.05 1.06.22 1.79.47 2.43.26.66.6 1.22 1.16 1.77.55.56 1.11.9 1.77 1.16.64.25 1.37.42 2.43.47C8.94 22 9.28 22 12 22s3.06-.01 4.12-.06c1.06-.05 1.79-.22 2.43-.47.66-.26 1.22-.6 1.77-1.16.56-.55.9-1.11 1.16-1.77.25-.64.42-1.37.47-2.43.05-1.06.06-1.4.06-4.12s-.01-3.06-.06-4.12c-.05-1.06-.22-1.79-.47-2.43-.26-.66-.6-1.22-1.16-1.77-.55-.56-1.11-.9-1.77-1.16-.64-.25-1.37-.42-2.43-.47C15.06 2.01 14.72 2 12 2zm0 1.8c2.67 0 2.99.01 4.04.06.98.04 1.5.21 1.86.34.47.18.8.4 1.15.75.35.35.57.68.75 1.15.13.36.29.88.34 1.86.05 1.05.06 1.37.06 4.04s-.01 2.99-.06 4.04c-.05.98-.21 1.5-.34 1.86-.18.47-.4.8-.75 1.15-.35.35-.68.57-1.15.75-.36.13-.88.29-1.86.34-1.05.05-1.37.06-4.04.06s-2.99-.01-4.04-.06c-.98-.05-1.5-.21-1.86-.34-.47-.18-.8-.4-1.15-.75-.35-.35-.57-.68-.75-1.15-.13-.36-.29-.88-.34-1.86-.05-1.05-.06-1.37-.06-4.04s.01-2.99.06-4.04c.05-.98.21-1.5.34-1.86.18-.47.4-.8.75-1.15.35-.35.68-.57 1.15-.75.36-.13.88-.29 1.86-.34C9.01 3.81 9.33 3.8 12 3.8zm0 3.05a5.15 5.15 0 1 0 0 10.3 5.15 5.15 0 0 0 0-10.3zm0 8.5a3.35 3.35 0 1 1 0-6.7 3.35 3.35 0 0 1 0 6.7zm5.35-8.7a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.85 0-2.14 1.45-2.14 2.94v5.66H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></symbol>
+	</svg>
   );
 }
 
