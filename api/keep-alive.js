@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ ok: false, error: "Unauthorized" });
   }
@@ -22,4 +22,4 @@ export default async function handler(req, res) {
     console.error("Keep-alive error:", err);
     return res.status(500).json({ ok: false, error: err.message });
   }
-}
+};
