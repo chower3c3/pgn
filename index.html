@@ -340,6 +340,10 @@ const CSS = `
   .astat{background:rgba(255,255,255,0.07);border:1px solid rgba(201,168,76,0.18);padding:14px 19px;border-radius:4px;backdrop-filter:blur(6px);display:flex;align-items:baseline;gap:10px;}
   .astat .an{font-size:26px;font-weight:900;color:var(--gold-light);line-height:1;letter-spacing:-0.025em;}
   .astat .al{font-size:12px;color:rgba(255,255,255,0.58);font-weight:300;}
+  .about-photo{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/5;background:var(--green);box-shadow:var(--shadow-md);}
+  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block;}
+  .about-photo-cap{position:absolute;left:0;right:0;bottom:0;padding:48px 24px 20px;background:linear-gradient(to top,rgba(6,22,16,0.85) 0%,transparent 100%);color:white;font-size:14px;font-weight:700;letter-spacing:0.02em;}
+  .about-photo-cap span{display:block;font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-light);margin-bottom:4px;}
   .about-acc{position:absolute;bottom:-13px;right:-13px;width:72px;height:72px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);}
   .about-acc svg{width:32px;height:32px;fill:white;}
   .about-copy .st{text-align:center;}
@@ -350,6 +354,39 @@ const CSS = `
   .pillar svg{width:16px;height:16px;fill:var(--green-accent);flex-shrink:0;margin-top:3px;}
   .pillar strong{display:block;font-size:11.5px;font-weight:700;color:var(--green);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;}
   .pillar span{font-size:12.5px;color:var(--text-light);line-height:1.6;font-weight:300;}
+
+  .tb-s{padding:100px 0;background:linear-gradient(170deg,#061610 0%,var(--green) 55%,#122A1C 100%);position:relative;overflow:hidden;}
+  .tb-s::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 10% 20%,rgba(201,168,76,0.06) 0%,transparent 60%);pointer-events:none;}
+  .tb-g{display:grid;grid-template-columns:5fr 6fr;gap:64px;align-items:stretch;position:relative;z-index:1;}
+  .tb-vis{position:relative;border-radius:var(--radius);overflow:hidden;min-height:400px;background:linear-gradient(160deg,var(--green-mid) 0%,#061610 100%);border:1px solid rgba(201,168,76,0.2);}
+  .tb-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .tb-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,22,16,0.94) 0%,rgba(6,22,16,0.35) 55%,rgba(6,22,16,0.1) 100%);}
+  .tb-brand{position:absolute;left:28px;right:28px;bottom:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;}
+  .tb-logo{width:116px;height:auto;display:block;}
+  .tb-vis.nophoto .tb-brand{top:0;bottom:0;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+  .tb-vis.nophoto .tb-logo{width:200px;}
+  .tb-vis.nophoto .tb-loc{text-align:center;}
+  .tb-loc{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.6);text-align:right;line-height:1.7;}
+  .tb-copy{display:flex;flex-direction:column;justify-content:center;}
+  .tb-copy .ss{margin-bottom:14px;}
+  .tb-copy .ss strong{color:white;font-weight:600;}
+  .tb-perks{margin-top:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.25);border-radius:var(--radius);padding:22px 26px;display:flex;flex-direction:column;gap:14px;}
+  .tb-perks-lbl{font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);}
+  .tb-perk{display:flex;align-items:flex-start;gap:12px;}
+  .tb-perk svg{width:16px;height:16px;fill:var(--gold-light);flex-shrink:0;margin-top:2px;}
+  .tb-perk strong{display:block;font-size:12.5px;font-weight:700;color:white;margin-bottom:2px;letter-spacing:0.02em;}
+  .tb-perk span{font-size:12.5px;color:rgba(255,255,255,0.58);line-height:1.6;font-weight:300;}
+  .tb-note{font-size:11px;color:rgba(255,255,255,0.4);font-weight:300;font-style:italic;}
+  .tb-ways-h{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:56px 0 18px;position:relative;z-index:1;}
+  .tb-ways-h h3{font-size:13px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:white;}
+  .tb-ways-h span{font-size:12px;color:rgba(255,255,255,0.45);font-weight:300;}
+  .tb-ways{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:1;}
+  .tb-way{display:flex;flex-direction:column;gap:8px;padding:22px 22px 20px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);transition:all 0.25s;}
+  .tb-way:hover{border-color:var(--gold);background:rgba(201,168,76,0.08);transform:translateY(-3px);}
+  .tb-way-n{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:0.1em;}
+  .tb-way-t{font-size:13px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:0.05em;}
+  .tb-way-d{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;font-weight:300;flex:1;}
+  .tb-way-c{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);margin-top:4px;}
 
   .sp-s{background:var(--white);padding:100px 0;}
   .sp-g{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;}
@@ -446,6 +483,9 @@ const CSS = `
     .nav-hamburger{display:flex;}
     .hero-inner,.sw{padding-left:24px;padding-right:24px;}
     .vg,.pg,.sp-g,.blog-g{grid-template-columns:1fr;}
+    .tb-g{grid-template-columns:1fr;gap:36px;}
+    .tb-vis{min-height:220px;}
+    .tb-ways{grid-template-columns:repeat(2,1fr);}
     .about-g,.cg,.roi-g{grid-template-columns:1fr;gap:40px;}
     .pc.top{transform:none;}
     .mb-g,.frow{grid-template-columns:1fr;}
@@ -466,34 +506,37 @@ const CSS = `
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const EVENTS={
+  "2026-06":[
+    {day:25,title:"Monthly Twilight 9",time:"6:00 PM",course:"Pittsburgh National Golf Club",type:"twilight"},
+  ],
   "2026-07":[
-    {day:29,title:"Monthly Twilight 9",time:"6:00 PM",course:"TBD",type:"twilight"},
+    {day:17,title:"18-Hole Round",time:"2:40 PM",course:"Quicksilver Golf Club",type:"18hole"},
+	{day:29,title:"Monthly Twilight 9",time:"6:00 PM",course:"Lindenwood Golf Club",type:"twilight"},
   ],
   "2026-08":[
-    {day:27,title:"Monthly Twilight 9",time:"5:30 PM",course:"TBD",type:"twilight"},
+    {day:21,title:"18-Hole Round",time:"5:30 PM",course:"Sewickley Heights Golf Club",type:"18hole"},
+    {day:27,title:"Monthly Twilight 9",time:"5:30 PM",course:"Shadow Lakes Country Club",type:"twilight"},
   ],
   "2026-09":[
-    {day:11,title:"18-Hole Round",time:"8:00 AM",course:"TBD",type:"18hole"},    
-    {day:24,title:"Monthly Twilight 9",time:"5:00 PM",course:"TBD",type:"twilight"},
+    {day:25,title:"18-Hole Round",time:"1:00 PM",course:"Hickory Heights Golf Club",type:"18hole"},    
   ],
   "2026-10":[
-    {day:17,title:"PGN Year-End Tournament",time:"8:00 AM",course:"TBD",type:"tournament"},
-    {day:22,title:"Monthly Twilight 9",time:"5:00 PM",course:"TBD",type:"twilight"},
+    {day:23,title:"18-Hole Round",time:"1:00 PM",course:"Cranberry Highlands Golf Course",type:"18hole"},
   ],
   "2026-11":[
-    {day:19,title:"Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+    {day:17,title:"Simulator Outing",time:"8:00 PM",course:"Tee Box Sewickley",type:"simulator"},
   ],
   "2026-12":[
-    {day:10,title:"Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+    {day:15,title:"Simulator Outing",time:"8:00 PM",course:"Tee Box Sewickley",type:"simulator"},
   ],
   "2027-01":[
-    {day:14,title:"Winter Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+    {day:19,title:"Simulator Outing",time:"8:00 PM",course:"Tee Box Sewickley",type:"simulator"},
   ],
   "2027-02":[
-    {day:18,title:"Winter Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+    {day:16,title:"Simulator Outing",time:"8:00 PM",course:"Tee Box Sewickley",type:"simulator"},
   ],
   "2027-03":[
-    {day:25,title:"Spring Simulator Outing",time:"6:00 PM",course:"Indoor Facility TBD",type:"simulator"},
+    {day:16,title:"Simulator Outing",time:"8:00 PM",course:"Tee Box Sewickley",type:"simulator"},
   ]
 };
 const COURSES=[
@@ -506,6 +549,7 @@ const COURSES=[
 ];
 const PARTNERS=[
   {name:"POWER Marketing Company",url:"https://www.powermarketingcompany.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d8d0982fd67a35e4879e.png",alt:"POWER Marketing Company"},
+  {name:"Tee Box Sewickley",url:"https://tbx.golf/pittsburgh",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/6aca3a85c478ac553586b8b1.png",alt:"Tee Box Sewickley"},
   {name:"Jiggy Putts",url:"https://www.puttsclub.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899a4e6aa34cb4c80c4.png",alt:"Putts Club"},
   {name:"Solenture",url:"https://www.solenture.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899d5a667daf6495281.png",alt:"Solenture"},
   {name:"OnPar Now",url:"https://onparnow.com",logo:"https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d899019dc508d3c654b2.png",alt:"On Par Now"},
@@ -644,7 +688,7 @@ function PricingSection(){
   const plans=[
     {tier:"Monthly",amt:"146",period:"/mo",was:"Regular: $195/mo",save:"Save $49 per month",top:false,desc:"Flexible month-to-month access. A great starting point to experience PGN before committing to a full season.",feats:["Monthly twilight events","Quarterly 18-hole events","Networking events","Member directory access","Exclusive PGN content","Cancel anytime"]},
     {tier:"Season Pass",amt:"750",period:"Apr–Oct",was:"Regular: $1,000",save:"Best value for the full season",top:false,desc:"Commit to the full golf season and get the most out of every PGN event, from the first twilight round through the year-end tournament.",feats:["All monthly twilight events","All quarterly 18-hole events","Guaranteed tournament invite","Networking events","Member directory access","Exclusive PGN content"]},
-    {tier:"Annual",amt:"1,346",period:"/yr",was:"Regular: $1,795/yr",save:"Save $449 annually",top:true,desc:"Full 12-month membership including off-season simulator outings. The complete PGN experience for those building their network year-round.",feats:["Everything in Season Pass","Off-season simulator outings","Priority event registration","Founding member status","Year-round exclusive content"]},
+    {tier:"Annual",amt:"1,346",period:"/yr",was:"Regular: $1,795/yr",save:"Save $449 annually",top:true,desc:"Full 12-month membership including off-season simulator outings. The complete PGN experience for those building their network year-round.",feats:["Everything in Season Pass","Off-season outings at Tee Box","Priority event registration","Founding member status","Year-round exclusive content"]},
   ];
   return(
     <section className="pricing-s" id="pricing">
@@ -653,7 +697,7 @@ function PricingSection(){
         <div className="mb reveal" ref={rM}>
           <div className="mb-lbl">Membership Includes</div>
           <div className="mb-g">
-            {[["i-moon","Monthly 9-hole weeknight twilight events"],["i-users","Business networking events"],["i-flag","Quarterly 18-hole Friday golf events"],["i-book","Private member directory access"],["i-trophy","End of year member tournament"],["i-article","Exclusive PGN golf and business content"],["i-screen","Off-season simulator outings"],["i-target","Custom-curated foursome matching"]].map(([ic,t])=>(
+            {[["i-moon","Monthly 9-hole weeknight twilight events"],["i-users","Business networking events"],["i-flag","Quarterly 18-hole Friday golf events"],["i-book","Private member directory access"],["i-trophy","End of year member tournament"],["i-article","Exclusive PGN golf and business content"],["i-screen","Off-season outings at Tee Box Sewickley"],["i-target","Custom-curated foursome matching"]].map(([ic,t])=>(
               <div className="mb-i" key={t}><I id={ic}/>{t}</div>
             ))}
           </div>
@@ -821,9 +865,77 @@ function CoursesSection(){
   );
 }
 
+/* TEE BOX PARTNERSHIP */
+const TB_UTM="?utm_source=pittsburghgolfnetwork&utm_medium=referral&utm_campaign=pgn_partnership";
+const TB_PHOTO="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/6ace961b412f76b526b31b48.webp"; // paste a hosted photo URL here; leave empty for the logo-only panel
+function TeeBoxLogo({className}){
+  return(
+    <svg className={className} viewBox="0 0 1080 800" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tee Box">
+      <path d="M787.427 670.494L831.618 602.207L875.734 670.494H952.252L869.802 552.9L952.252 435.232H875.734L831.618 503.519L787.427 435.232H710.909L793.359 552.9L710.909 670.494H787.427Z" fill="#ECE2D3"/>
+      <path d="M479.497 670.495H607.175C636.907 670.495 660.931 646.397 660.931 616.739V489.061C660.931 459.329 636.833 435.306 607.175 435.306H479.497C449.765 435.306 425.742 459.403 425.742 489.061V616.739C425.742 646.472 449.839 670.495 479.497 670.495ZM481.277 614.886V490.841H605.322V614.886H481.277Z" fill="#ECE2D3"/>
+      <path d="M0 0V799.508H1080V0H0ZM1021.28 740.859H58.6489V58.7231H1021.28V740.859Z" fill="#ECE2D3"/>
+      <path d="M350.783 547.266C358.123 536.144 362.424 522.798 362.424 508.488V506.264C362.424 486.912 354.49 469.191 341.812 456.512C329.133 443.833 311.412 435.9 292.06 435.9H129.385V669.902H301.032C320.68 669.902 338.697 661.895 351.525 648.993C364.426 636.166 372.433 618.149 372.433 598.5C372.433 578.852 364.426 560.835 351.525 548.008C351.302 547.785 351.005 547.563 350.783 547.34V547.266ZM304.516 493.882C307.705 497.144 309.632 501.37 309.632 506.264V508.488C309.632 513.456 307.705 517.608 304.516 520.87C301.254 524.059 297.028 525.986 292.134 525.986H182.251V488.691H292.134C297.102 488.691 301.254 490.619 304.516 493.807V493.882ZM314.229 611.698C310.745 615.109 306.296 617.185 301.032 617.185H182.177V579.89H301.032C306.296 579.89 310.745 581.966 314.229 585.377C317.64 588.862 319.716 593.31 319.716 598.575C319.716 603.839 317.64 608.288 314.229 611.773V611.698Z" fill="#ECE2D3"/>
+      <path d="M489.437 364.497H654.558V305.7H489.437V270.407H622.305V223.324H489.437V188.105H652.482V129.234H430.64V364.423H489.437V364.497Z" fill="#ECE2D3"/>
+      <path d="M784.455 364.497H949.503V305.7H784.455V270.407H917.25V223.324H784.455V188.105H947.501V129.234H725.658V364.423H784.455V364.497Z" fill="#ECE2D3"/>
+      <path d="M184.7 188.105H214.136V364.497H272.933V188.105H365.466V129.234H121.528V188.105H184.7Z" fill="#ECE2D3"/>
+    </svg>
+  );
+}
+
+function TeeBoxSection(){
+  const rV=useReveal(),rT=useReveal(),rW=useReveal();
+  const ways=[
+    {t:"Tour the Facility",d:"See the bays, the gym, and the tech in person.",c:"Book a Tour",u:"https://tbx.golf/pittsburgh/about/tour-location"},
+    {t:"Performance Assessment",d:"Complimentary for PGN members. Start here.",c:"Book Assessment",u:"https://tbx.golf/pittsburgh/gpa"},
+    {t:"Club Fitting",d:"Fit to your body and swing data, with no obligation to buy.",c:"Book a Fitting",u:"https://tbx.golf/pittsburgh/book-a-fitting"},
+    {t:"Become a Member",d:"24/7 access to train on your schedule all winter.",c:"View Memberships",u:"https://tbx.golf/pittsburgh/pricing"},
+  ];
+  return(
+    <section className="tb-s" id="teebox">
+      <div className="sw">
+        <div className="tb-g">
+          <div className={"tb-vis reveal"+(TB_PHOTO?"":" nophoto")} ref={rV}>
+            {TB_PHOTO&&<img className="tb-photo" src={TB_PHOTO} alt="Training at Tee Box Sewickley"/>}
+            <div className="tb-scrim"/>
+            <div className="tb-brand">
+              <TeeBoxLogo className="tb-logo"/>
+              <div className="tb-loc">Sewickley, PA<br/>Open 24/7 for members</div>
+            </div>
+          </div>
+          <div className="tb-copy reveal" ref={rT}>
+            <div className="eyebrow" style={{color:"var(--gold)"}}>Exclusive Golf Development Partner</div>
+            <h2 className="st st-l">PGN's Offseason Home</h2>
+            <p className="ss ss-l">Tee Box Sewickley is more than an indoor simulator. It's a complete golf development system that brings fitness, coaching, club fitting, and TrackMan simulators together under one roof.</p>
+            <p className="ss ss-l">Owned by PGN member <strong>Rick Barzen</strong>, Tee Box is where PGN hosts its indoor outings all offseason, so you can keep playing, keep improving, and keep connecting until the fairways open back up.</p>
+            <div className="tb-perks">
+              <div className="tb-perks-lbl">PGN Member Benefits</div>
+              <div className="tb-perk"><I id="i-target"/><div><strong>Complimentary Golf Performance Assessment</strong><span>Movement screen, 3D swing analysis, and a TrackMan session, plus a custom plan for your game.</span></div></div>
+              <div className="tb-perk"><I id="i-gift"/><div><strong>Exclusive Member Discounts</strong><span>Preferred pricing on lessons and club fittings.</span></div></div>
+              <div className="tb-note">Mention you're a PGN member when booking.</div>
+            </div>
+          </div>
+        </div>
+        <div className="reveal" ref={rW}>
+          <div className="tb-ways-h"><h3>4 Ways In</h3><span>Where do you want to start?</span></div>
+          <div className="tb-ways">
+            {ways.map((w,i)=>(
+              <a className="tb-way" key={w.t} href={w.u+TB_UTM} target="_blank" rel="noreferrer">
+                <span className="tb-way-n">0{i+1}</span>
+                <span className="tb-way-t">{w.t}</span>
+                <span className="tb-way-d">{w.d}</span>
+                <span className="tb-way-c">{w.c} →</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CalendarSection(){
   const[year,setYear]=useState(2026);
-  const[mo,setMo]=useState(6);
+  const[mo,setMo]=useState(9);
   const rH=useReveal(),rC=useReveal();
   const change=d=>{let m=mo+d,y=year;if(m>11){m=0;y++;}if(m<0){m=11;y--;}setMo(m);setYear(y);};
   const key=`${year}-${String(mo+1).padStart(2,"0")}`;
@@ -880,15 +992,11 @@ function AboutSection(){
             <h2 className="st">Where Business Gets Done on the Back Nine</h2>
           </div>
           <div className="about-vis reveal" ref={rV}>
-            <div className="about-panel">
-              <div className="about-wm">PGN</div>
-              <div className="about-stats">
-                {[["6+","Premier courses in the PGN rotation"],["15+","Professional networking events per year"],["Only","Business-focused golf membership in Pittsburgh"]].map(([n,l])=>(
-                  <div className="astat" key={n}><span className="an">{n}</span><span className="al">{l}</span></div>
-                ))}
-              </div>
+            <div className="about-photo">
+              <img src="https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/6ace97c5beb75e26e5b8be69.jpg" alt="PGN co-founders Rocco Maue and Colton Hower at the range" loading="lazy"/>
+              <div className="about-photo-cap"><span>The Founders</span>Colton Hower &amp; Rocco Maue</div>
             </div>
-            <div className="about-acc"><I id="i-golf"/></div>
+			<div className="about-acc"><I id="i-golf"/></div>
           </div>
           <div className="about-copy reveal" ref={rT}>
             <p>Pittsburgh Golf Network was started by two lifelong friends — ex-college baseball players, avid golfers, and business partners — who kept running into the same problem: the best professional conversations they had were never happening in a conference room. They were happening on the golf course.</p>
@@ -1141,7 +1249,7 @@ function MailingListSection(){
 }
 	  
 function Footer(){
-  const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://pittsburghgolfnetwork.com/members"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
+  const cols=[{h:"Membership",links:[["Pricing and Plans","#pricing"],["Apply Now","https://signup.pittsburghgolfnetwork.com"],["Member Login","https://pittsburghgolfnetwork.com/members"]]},{h:"Events",links:[["Event Calendar","#calendar"],["Featured Courses","#courses"],["Tee Box Partnership","#teebox"],["Corporate Sponsors","#sponsors"]]},{h:"Company",links:[["About PGN","#about"],["Blog","#blog"],["Contact","#contact"],["golf@pittsburghgolfnetwork.com","mailto:golf@pittsburghgolfnetwork.com"]]}];
   return(
     <footer className="footer">
       <div className="sw">
@@ -1593,6 +1701,7 @@ function App(){
       <PricingSection/>
       <ROISection/>
       <CoursesSection/>
+      <TeeBoxSection/>
       <CalendarSection/>
       <AboutSection/>
       <SponsorsSection/>
