@@ -21,9 +21,9 @@ const TMP = path.join(ROOT, ".prerender-tmp");
 
 const SITE = "https://www.pittsburghgolfnetwork.com";
 // Image used when a link is shared on LinkedIn, Facebook, iMessage, Slack, etc.
-// Ideal size is 1200x630. Swap this URL for a purpose-made share image any time.
-const OG_IMAGE = "https://assets.cdn.filesafe.space/o3gJLGbebcAizoBE8JHb/media/69d7d7c89bcdf086d1dfb0d0.jpg";
-const OG_IMAGE_ALT = "Golf course fairway at a Pittsburgh Golf Network outing";
+// og-image.jpg is 1200x630, designed in scripts/og-image-source.html.
+const OG_IMAGE = SITE + "/og-image.jpg";
+const OG_IMAGE_ALT = "Pittsburgh Golf Network: The Links Between Pittsburgh's Best Professionals. Application-only golf and business networking.";
 
 const PAGES = [
   { src: "index.html", url: "/", type: "website", jsonld: true },
@@ -32,7 +32,12 @@ const PAGES = [
 ];
 
 // Static files copied to dist/ untouched.
-const COPY = ["members", "box-assessment-32.webp"];
+// Month the calendar shows in the pre-rendered HTML (Pittsburgh time). The page then
+// jumps to the visitor's current month after load, so a stale deploy never shows an old month.
+const _ny = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "numeric" }).formatToParts(new Date());
+const RENDER_YM = [Number(_ny.find((p) => p.type === "year").value), Number(_ny.find((p) => p.type === "month").value) - 1];
+
+const COPY = ["members", "box-assessment-32.webp", "og-image.jpg"];
 
 const ENTRY_RE = /ReactDOM\.createRoot\(document\.getElementById\('root'\)\)\.render\(<App\/>\);\s*\n?\s*setTimeout\(\(\)=>\{const r=document\.getElementById\('root'\);if\(r\)r\.style\.opacity='1';\},100\);/;
 const BABEL_RE = /<script type="text\/babel"[^>]*>([\s\S]*?)<\/script>/;
@@ -56,6 +61,8 @@ function seoTags(html, page) {
     `<meta property="og:description" content="${esc(desc)}"/>`,
     `<meta property="og:url" content="${url}"/>`,
     `<meta property="og:image" content="${OG_IMAGE}"/>`,
+    `<meta property="og:image:width" content="1200"/>`,
+    `<meta property="og:image:height" content="630"/>`,
     `<meta property="og:image:alt" content="${esc(OG_IMAGE_ALT)}"/>`,
     `<meta name="twitter:card" content="summary_large_image"/>`,
     `<meta name="twitter:title" content="${esc(title)}"/>`,
@@ -112,6 +119,7 @@ async function renderPage(page) {
   );
   const serverFile = path.join(TMP, `${name}.server.cjs`);
   writeFileSync(serverFile, serverCode);
+  globalThis.__PGN_RENDER_YM = RENDER_YM;
   const { html: markup, css } = createRequire(import.meta.url)(serverFile);
   if (!markup || markup.length < 500) throw new Error(`${page.src}: rendered markup looks empty`);
 
@@ -129,7 +137,7 @@ async function renderPage(page) {
   html = html
     .replace(CDN_RE, "")
     .replace(FALLBACK_RE, "")
-    .replace(BABEL_RE, () => `<script src="${jsName}" defer></script>`)
+    .replace(BABEL_RE, () => `<script>window.__PGN_RENDER_YM=${JSON.stringify(RENDER_YM)}</script>\n  <script src="${jsName}" defer></script>`)
     .replace(
       /<div id="root"[^>]*><\/div>/,
       () => `<div id="root">${markup}</div>`
