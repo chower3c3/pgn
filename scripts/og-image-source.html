@@ -1,0 +1,58 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:M;font-weight:600;src:url(node_modules/@fontsource/montserrat/files/montserrat-latin-600-normal.woff2)}
+@font-face{font-family:M;font-weight:900;src:url(node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2)}
+@font-face{font-family:M;font-weight:800;font-style:italic;src:url(node_modules/@fontsource/montserrat/files/montserrat-latin-800-italic.woff2)}
+@font-face{font-family:LB;font-style:italic;src:url(node_modules/@fontsource/libre-baskerville/files/libre-baskerville-latin-400-italic.woff2)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{position:relative;font-family:M,sans-serif;color:#fff;
+  background:radial-gradient(ellipse 70% 90% at 78% 55%,#1E5A34 0%,#123A22 45%,#0B2215 100%)}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:60px 60px}
+.art{position:absolute;right:0;top:0;width:560px;height:630px}
+.frame{position:absolute;inset:28px;border:1px solid rgba(201,168,76,.28)}
+.content{position:absolute;left:84px;top:76px;width:660px}
+.eyebrow{display:flex;align-items:center;gap:16px;color:#C9A84C;font-weight:600;font-size:17px;letter-spacing:.28em;text-transform:uppercase}
+.eyebrow:before{content:"";width:44px;height:2px;background:#C9A84C}
+h1{margin-top:26px;font-weight:900;font-size:62px;line-height:1;text-transform:uppercase;letter-spacing:-.01em}
+h1 em{font-style:italic;font-weight:800;color:#E2C06A}
+.tag{margin-top:26px;white-space:nowrap;font-family:LB,serif;font-style:italic;font-size:23px;color:rgba(255,255,255,.78)}
+.foot{position:absolute;left:84px;right:84px;bottom:62px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;font-size:18px;letter-spacing:.2em;text-transform:uppercase}
+.brand span{color:#C9A84C}
+.pill{background:#C9A84C;color:#0E2B1A;font-weight:900;font-size:16px;letter-spacing:.2em;text-transform:uppercase;padding:15px 26px}
+</style></head><body>
+<div class="grid"></div>
+<svg class="art" viewBox="0 0 560 630">
+  <!-- putting green contour lines -->
+  <g fill="none" stroke="#C9A84C" stroke-width="1.4">
+    <ellipse cx="330" cy="440" rx="260" ry="120" opacity=".10"/>
+    <ellipse cx="330" cy="440" rx="215" ry="98" opacity=".14"/>
+    <ellipse cx="330" cy="440" rx="170" ry="77" opacity=".19"/>
+    <ellipse cx="330" cy="440" rx="126" ry="56" opacity=".25"/>
+    <ellipse cx="330" cy="440" rx="84" ry="37" opacity=".32"/>
+    <ellipse cx="330" cy="440" rx="44" ry="19" opacity=".42"/>
+  </g>
+  <!-- cup -->
+  <ellipse cx="330" cy="440" rx="15" ry="6" fill="#06150C"/>
+  <!-- flagstick -->
+  <rect x="327.5" y="168" width="5" height="272" fill="#F3EFE6"/>
+  <!-- flag -->
+  <path d="M332 170 L432 196 L332 226 Z" fill="#C9A84C"/>
+  <!-- ball -->
+  <circle cx="262" cy="468" r="13" fill="#FFFFFF"/>
+  <circle cx="258" cy="464" r="1.6" fill="#d8d8d8"/><circle cx="265" cy="466" r="1.6" fill="#d8d8d8"/><circle cx="261" cy="472" r="1.6" fill="#d8d8d8"/><circle cx="267" cy="472" r="1.6" fill="#d8d8d8"/>
+  <ellipse cx="266" cy="482" rx="14" ry="3.5" fill="#000" opacity=".25"/>
+</svg>
+<div class="frame"></div>
+<div class="content">
+  <div class="eyebrow">Pittsburgh's Premier Golf Membership</div>
+  <h1>The <em>Links</em> Between Pittsburgh's Best Professionals</h1>
+  <div class="tag">Application-only. Curated foursomes. Real connections.</div>
+</div>
+<div class="foot">
+  <div class="brand">Pittsburgh <span>Golf</span> Network</div>
+  <div class="pill">Apply for Membership</div>
+</div>
+</body></html>
